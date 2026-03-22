@@ -100,3 +100,4 @@ jobs:
         run: |
           packslice split examples/sample_pack examples/split_demo --group-by signature --train-ratio 70 --eval-ratio 15 --test-ratio 15
           packslice summarize examples/split_demo
+          packslice markdown examples/split_demo examples/split_demo/REPORT.md

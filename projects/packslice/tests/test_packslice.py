@@ -5,7 +5,7 @@ import tempfile
 import unittest
 from pathlib import Path
 
-from packslice.report import summarize_splits
+from packslice.report import markdown_splits, summarize_splits
 from packslice.splitter import split_pack
 
 
@@ -77,6 +77,23 @@ class PackSliceTests(unittest.TestCase):
         summary = summarize_splits(payload)
         self.assertIn("Total cases: 10", summary)
         self.assertIn("- train: 7 cases", summary)
+
+    def test_markdown_splits_renders_sections(self):
+        payload = {
+            "total_cases": 6,
+            "group_by": "signature",
+            "splits": [
+                {
+                    "name": "train",
+                    "case_count": 2,
+                    "signatures": [{"signature": "failure:note:assertion", "count": 1}],
+                }
+            ],
+        }
+        report = markdown_splits(payload)
+        self.assertIn("# PackSlice Report", report)
+        self.assertIn("## train", report)
+        self.assertIn("failure:note:assertion", report)
 
 
 if __name__ == "__main__":

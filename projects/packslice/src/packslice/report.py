@@ -21,3 +21,25 @@ def summarize_splits(payload: dict[str, Any]) -> str:
     for split in payload.get("splits", []):
         lines.append(f"- {split['name']}: {split['case_count']} cases")
     return "\n".join(lines)
+
+
+def markdown_splits(payload: dict[str, Any]) -> str:
+    lines = [
+        "# PackSlice Report",
+        "",
+        f"- Total cases: {payload['total_cases']}",
+        f"- Group by: `{payload['group_by']}`",
+        "",
+    ]
+    for split in payload.get("splits", []):
+        lines.append(f"## {split['name']}")
+        lines.append("")
+        lines.append(f"- Cases: {split['case_count']}")
+        signatures = split.get("signatures", [])
+        if signatures:
+            top = ", ".join(f"{item['signature']} ({item['count']})" for item in signatures[:5])
+            lines.append(f"- Signatures: {top}")
+        else:
+            lines.append("- Signatures: none")
+        lines.append("")
+    return "\n".join(lines).rstrip() + "\n"

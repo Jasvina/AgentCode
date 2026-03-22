@@ -122,6 +122,7 @@ source .venv/bin/activate
 pip install -e .
 packslice split examples/sample_pack examples/split_demo --group-by signature
 packslice summarize examples/split_demo
+packslice markdown examples/split_demo examples/split_demo/REPORT.md
 ```
 
 ## Why these projects have star potential

@@ -32,6 +32,7 @@ source .venv/bin/activate
 pip install -e .
 packslice split examples/sample_pack examples/split_demo --group-by signature --train-ratio 70 --eval-ratio 15 --test-ratio 15
 packslice summarize examples/split_demo
+packslice markdown examples/split_demo examples/split_demo/REPORT.md
 ```
 
 ## Example output
@@ -51,6 +52,7 @@ Splits:
 ```bash
 packslice split path/to/tracepack path/to/output_dir --group-by signature
 packslice summarize path/to/output_dir
+packslice markdown path/to/output_dir path/to/report.md
 ```
 
 ## Output layout

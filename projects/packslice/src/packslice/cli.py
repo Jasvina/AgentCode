@@ -1,9 +1,10 @@
 from __future__ import annotations
 
 import argparse
+from pathlib import Path
 import sys
 
-from .report import load_summary, summarize_splits
+from .report import load_summary, markdown_splits, summarize_splits
 from .splitter import split_pack
 
 
@@ -32,6 +33,13 @@ def _cmd_summarize(args: argparse.Namespace) -> int:
     return 0
 
 
+def _cmd_markdown(args: argparse.Namespace) -> int:
+    payload = load_summary(args.path)
+    Path(args.output).write_text(markdown_splits(payload), encoding="utf-8")
+    print(f"Wrote markdown report to {args.output}")
+    return 0
+
+
 def build_parser() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(prog="packslice")
     subparsers = parser.add_subparsers(dest="command", required=True)
@@ -48,6 +56,11 @@ def build_parser() -> argparse.ArgumentParser:
     summarize = subparsers.add_parser("summarize", help="summarize an existing split output")
     summarize.add_argument("path")
     summarize.set_defaults(func=_cmd_summarize)
+
+    markdown = subparsers.add_parser("markdown", help="render a markdown report for an existing split output")
+    markdown.add_argument("path")
+    markdown.add_argument("output")
+    markdown.set_defaults(func=_cmd_markdown)
 
     return parser
 
