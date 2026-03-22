@@ -3,7 +3,8 @@
   "episode_id": "billing-timeout",
   "final_output": "I could not verify invoice INV-7 for alice@example.com with sk_secret.",
   "metrics": {
-    "latency_ms": 120
+    "latency_ms": 120,
+    "owner": "alice@example.com"
   },
   "model": "gpt-4.1-mini",
   "prompt_version": "billing-v3",
@@ -23,7 +24,11 @@
         "arguments": {
           "invoice_id": "INV-7"
         },
+        "metadata": {
+          "token": "sk_secret"
+        },
         "output": {
+          "contact": "alice@example.com",
           "error": "timeout"
         },
         "status": "error"

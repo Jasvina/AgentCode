@@ -18,12 +18,20 @@ class TracePackTests(unittest.TestCase):
             "prompt_version": "v1",
             "success": success,
             "final_output": "ok" if success else "Contact alice@example.com about INV-7 using sk_secret",
+            "metrics": {
+                "trace_owner": "alice@example.com" if not success else "owner@example.com",
+            },
             "steps": [
                 {"kind": "model_call", "name": "planner", "payload": {"prompt": "p", "response": "r"}},
                 {
                     "kind": "tool_call",
                     "name": final_step_name,
-                    "payload": {"arguments": {"x": 1}, "output": {"ok": success}, "status": "ok" if success else "error"},
+                    "payload": {
+                        "arguments": {"x": 1, "invoice_id": "INV-7"},
+                        "output": {"ok": success, "contact": "alice@example.com"},
+                        "status": "ok" if success else "error",
+                        "metadata": {"token": "sk_secret"},
+                    },
                 },
             ],
         }
@@ -57,6 +65,18 @@ class TracePackTests(unittest.TestCase):
             self.assertTrue(manifest['cases'][0]['redaction_applied'])
             self.assertIn('[REDACTED_EMAIL]', manifest['cases'][0]['final_output'])
             self.assertIn('labels', manifest['cases'][0])
+            self.assertEqual(
+                manifest['cases'][0]['steps'][1]['payload']['output']['contact'],
+                '[REDACTED_EMAIL]',
+            )
+            self.assertEqual(
+                manifest['cases'][0]['steps'][1]['payload']['metadata']['token'],
+                '[REDACTED_TOKEN]',
+            )
+            self.assertEqual(
+                manifest['cases'][0]['metrics']['trace_owner'],
+                '[REDACTED_EMAIL]',
+            )
 
     def test_export_jsonl_outputs_one_line_per_case(self):
         with tempfile.TemporaryDirectory() as tmpdir:

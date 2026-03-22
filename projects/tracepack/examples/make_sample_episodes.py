@@ -17,12 +17,21 @@ def main() -> None:
             "agent_name": "billing-agent",
             "episode_id": "billing-timeout",
             "final_output": "I could not verify invoice INV-7 for alice@example.com with sk_secret.",
-            "metrics": {"latency_ms": 120},
+            "metrics": {"latency_ms": 120, "owner": "alice@example.com"},
             "model": "gpt-4.1-mini",
             "prompt_version": "billing-v3",
             "steps": [
                 {"kind": "model_call", "name": "planner", "payload": {"prompt": "Check invoice", "response": "Call invoice_lookup"}},
-                {"kind": "tool_call", "name": "invoice_lookup", "payload": {"arguments": {"invoice_id": "INV-7"}, "output": {"error": "timeout"}, "status": "error"}},
+                {
+                    "kind": "tool_call",
+                    "name": "invoice_lookup",
+                    "payload": {
+                        "arguments": {"invoice_id": "INV-7"},
+                        "output": {"error": "timeout", "contact": "alice@example.com"},
+                        "status": "error",
+                        "metadata": {"token": "sk_secret"},
+                    },
+                },
                 {"kind": "note", "name": "assertion", "payload": {"expected": "status known", "actual": "timeout"}},
             ],
             "success": False,

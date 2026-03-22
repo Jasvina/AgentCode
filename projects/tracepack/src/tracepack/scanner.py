@@ -5,7 +5,7 @@ from pathlib import Path
 
 from .io import find_episode_files, load_episode
 from .model import Episode
-from .redact import contains_sensitive_text
+from .redact import contains_sensitive_value
 
 
 @dataclass
@@ -21,6 +21,8 @@ class CaseSummary:
     signature: str
     tags: list[str] = field(default_factory=list)
     labels: list[str] = field(default_factory=list)
+    metrics: dict = field(default_factory=dict)
+    steps: list[dict] = field(default_factory=list)
     contains_sensitive: bool = False
 
 
@@ -70,11 +72,17 @@ def _labels(episode: Episode, signature: str, tags: list[str], contains_sensitiv
 
 
 def _contains_sensitive(episode: Episode) -> bool:
-    fields = [episode.final_output, episode.episode_id, episode.agent_name, episode.model, episode.prompt_version]
+    fields = [
+        episode.final_output,
+        episode.episode_id,
+        episode.agent_name,
+        episode.model,
+        episode.prompt_version,
+        episode.metrics,
+    ]
     for step in episode.steps:
-        for value in [step.name, str(step.payload)]:
-            fields.append(value)
-    return any(contains_sensitive_text(value) for value in fields)
+        fields.extend([step.kind, step.name, step.payload])
+    return any(contains_sensitive_value(value) for value in fields)
 
 
 def scan_directory(root: str | Path) -> PackSummary:
@@ -97,6 +105,15 @@ def scan_directory(root: str | Path) -> PackSummary:
                 signature=signature,
                 tags=tags,
                 labels=_labels(episode, signature, tags, contains_sensitive),
+                metrics=dict(episode.metrics),
+                steps=[
+                    {
+                        "kind": step.kind,
+                        "name": step.name,
+                        "payload": step.payload,
+                    }
+                    for step in episode.steps
+                ],
                 contains_sensitive=contains_sensitive,
             )
         )

@@ -4,7 +4,7 @@ import json
 from pathlib import Path
 
 from .export import export_manifest_to_jsonl
-from .redact import redact_text
+from .redact import redact_text, redact_value
 from .scanner import PackSummary, scan_directory
 
 
@@ -47,9 +47,17 @@ def build_pack(
     for index, episode in enumerate(episodes, start=1):
         filename = f"{index:03d}-{_slug(episode.episode_id)}.json"
         final_output = episode.final_output
+        metrics = {}
+        steps = []
         redaction_applied = False
         if redact:
             final_output, redaction_applied = redact_text(final_output)
+            metrics, metrics_changed = redact_value(episode.metrics)
+            steps, steps_changed = redact_value(episode.steps)
+            redaction_applied = redaction_applied or metrics_changed or steps_changed
+        else:
+            metrics = dict(episode.metrics)
+            steps = list(episode.steps)
         case_payload = {
             "episode_id": episode.episode_id,
             "agent_name": episode.agent_name,
@@ -62,6 +70,8 @@ def build_pack(
             "contains_sensitive": episode.contains_sensitive,
             "redaction_applied": redaction_applied,
             "step_count": episode.step_count,
+            "metrics": metrics,
+            "steps": steps,
             "final_output": final_output,
             "source_path": episode.source_path,
         }

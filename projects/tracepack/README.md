@@ -24,7 +24,7 @@ TracePack focuses on that layer.
 - computes a simple failure signature from the last failing step
 - exports a benchmark pack with a `manifest.json` and `cases/`
 - attaches case labels for downstream triage and analytics
-- detects simple sensitive patterns and can redact final outputs during pack build
+- detects simple sensitive patterns and can recursively redact final outputs, metrics, and nested step payloads during pack build
 - exports packs to jsonl for dataset and eval workflows
 - can cap repeated signatures to keep packs diverse with `--max-per-signature`
 - supports `--only-failures` for failure-focused packs
