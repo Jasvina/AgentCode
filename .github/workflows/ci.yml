@@ -27,6 +27,7 @@ jobs:
           python examples/openai_agents_integration.py
           agentci summarize examples/openai_agents_episode.json
           agentci diff-html examples/math_episode.json examples/math_episode_candidate.json examples/math_diff.html
+          agentci assert-regression examples/math_episode.json examples/math_episode_latency_candidate.json --ignore-diff-prefix metric:latency_ms
 
   tracepack:
     runs-on: ubuntu-latest

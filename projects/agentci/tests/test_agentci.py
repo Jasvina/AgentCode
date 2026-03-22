@@ -5,6 +5,7 @@ import unittest
 from pathlib import Path
 
 from agentci.adapters import LangGraphEventAdapter, OpenAIAgentsEventAdapter
+from agentci.cli import main as cli_main
 from agentci.compare import compare_episodes
 from agentci.html_report import render_diff_html_report
 from agentci.pytest_plugin import EpisodeRegressionFixture
@@ -95,6 +96,40 @@ class AgentCITests(unittest.TestCase):
         helper = EpisodeRegressionFixture(default_ignore_diff_prefixes=("metric:latency_ms",))
         result = helper.check(baseline, candidate)
         self.assertTrue(result.passed)
+
+    def test_assert_regression_cli_passes_with_ignored_metric(self):
+        baseline = self._build_episode()
+        candidate = self._build_episode()
+        candidate.metrics["latency_ms"] = 88
+        with tempfile.TemporaryDirectory() as tmpdir:
+            root = Path(tmpdir)
+            baseline_path = root / "baseline.json"
+            candidate_path = root / "candidate.json"
+            baseline.save(baseline_path)
+            candidate.save(candidate_path)
+            code = cli_main(
+                [
+                    "assert-regression",
+                    str(baseline_path),
+                    str(candidate_path),
+                    "--ignore-diff-prefix",
+                    "metric:latency_ms",
+                ]
+            )
+        self.assertEqual(code, 0)
+
+    def test_assert_regression_cli_fails_on_output_change(self):
+        baseline = self._build_episode()
+        candidate = self._build_episode()
+        candidate.final_output = "bad"
+        with tempfile.TemporaryDirectory() as tmpdir:
+            root = Path(tmpdir)
+            baseline_path = root / "baseline.json"
+            candidate_path = root / "candidate.json"
+            baseline.save(baseline_path)
+            candidate.save(candidate_path)
+            code = cli_main(["assert-regression", str(baseline_path), str(candidate_path)])
+        self.assertEqual(code, 1)
 
     def test_load_rejects_invalid_episode(self):
         with tempfile.TemporaryDirectory() as tmpdir:

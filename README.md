@@ -69,6 +69,7 @@ pip install -e .
 python examples/math_agent.py
 agentci diff examples/math_episode.json examples/math_episode_candidate.json
 agentci diff-html examples/math_episode.json examples/math_episode_candidate.json examples/math_diff.html
+agentci assert-regression examples/math_episode.json examples/math_episode_latency_candidate.json --ignore-diff-prefix metric:latency_ms
 # optional: install pytest extra for regression-suite integration
 # pip install -e .[pytest]
 # pytest -q --agentci-ignore-diff metric:latency_ms

@@ -66,6 +66,7 @@ agentci summarize examples/math_episode.json
 agentci replay examples/math_episode.json --fail-on-mismatch
 agentci diff examples/math_episode.json examples/math_episode_candidate.json
 agentci diff-html examples/math_episode.json examples/math_episode_candidate.json examples/math_diff.html
+agentci assert-regression examples/math_episode.json examples/math_episode_latency_candidate.json --ignore-diff-prefix metric:latency_ms
 ```
 
 ## Example output
@@ -91,6 +92,9 @@ Differences
 
 $ agentci diff-html examples/math_episode.json examples/math_episode_candidate.json examples/math_diff.html
 Wrote HTML diff report to examples/math_diff.html
+
+$ agentci assert-regression examples/math_episode.json examples/math_episode_latency_candidate.json --ignore-diff-prefix metric:latency_ms
+AgentCI regression assertion passed
 ```
 
 ## Pytest regression usage
@@ -118,6 +122,19 @@ def test_math_agent_regression(episode_regression):
 ```
 
 This lets teams keep episode regression tests inside ordinary pytest suites instead of building a separate harness.
+
+## CI shell usage
+
+If you want a simple shell-level gate without pytest, use:
+
+```bash
+agentci assert-regression \
+  examples/math_episode.json \
+  examples/math_episode_latency_candidate.json \
+  --ignore-diff-prefix metric:latency_ms
+```
+
+This exits non-zero when meaningful trajectory changes or replay mismatches appear.
 
 ## Integration demos
 

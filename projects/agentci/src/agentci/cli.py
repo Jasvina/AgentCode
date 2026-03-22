@@ -5,6 +5,7 @@ import sys
 
 from .compare import compare_episodes
 from .html_report import write_diff_html_report
+from .regression import RegressionAssertionError, assert_episode_regression_from_paths
 from .replay import replay_episode
 from .schema import Episode
 
@@ -63,6 +64,21 @@ def _cmd_diff_html(args: argparse.Namespace) -> int:
     return 0
 
 
+def _cmd_assert_regression(args: argparse.Namespace) -> int:
+    try:
+        assert_episode_regression_from_paths(
+            args.baseline,
+            args.candidate,
+            ignore_diff_prefixes=tuple(args.ignore_diff_prefix),
+            check_candidate_replay=not args.skip_replay,
+        )
+    except RegressionAssertionError as exc:
+        print(str(exc))
+        return 1
+    print("AgentCI regression assertion passed")
+    return 0
+
+
 def build_parser() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(prog="agentci")
     subparsers = parser.add_subparsers(dest="command", required=True)
@@ -90,6 +106,25 @@ def build_parser() -> argparse.ArgumentParser:
     diff_html.add_argument("candidate")
     diff_html.add_argument("output")
     diff_html.set_defaults(func=_cmd_diff_html)
+
+    assert_regression = subparsers.add_parser(
+        "assert-regression",
+        help="fail if a candidate episode regresses against a baseline episode",
+    )
+    assert_regression.add_argument("baseline")
+    assert_regression.add_argument("candidate")
+    assert_regression.add_argument(
+        "--ignore-diff-prefix",
+        action="append",
+        default=[],
+        help="ignore diff items whose text starts with this prefix; can be passed multiple times",
+    )
+    assert_regression.add_argument(
+        "--skip-replay",
+        action="store_true",
+        help="skip replay validation for the candidate episode",
+    )
+    assert_regression.set_defaults(func=_cmd_assert_regression)
 
     return parser
 
