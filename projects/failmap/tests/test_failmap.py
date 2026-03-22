@@ -7,6 +7,7 @@ from pathlib import Path
 
 from failmap.cluster import build_clusters
 from failmap.compare import compare_cluster_files
+from failmap.issues import generate_issue_drafts
 from failmap.io import write_json
 from failmap.report import (
     markdown_compare_report,
@@ -113,6 +114,61 @@ class FailMapTests(unittest.TestCase):
             self.assertIn("growing", summary)
             self.assertIn("# FailMap Compare Report", markdown)
             self.assertIn("failure:tool_call:db_lookup", markdown)
+
+    def test_issue_drafts_are_generated_for_changed_clusters(self):
+        with tempfile.TemporaryDirectory() as tmpdir:
+            root = Path(tmpdir)
+            compare_payload = {
+                "format": "failmap-compare-v1",
+                "baseline_case_count": 4,
+                "candidate_case_count": 5,
+                "cluster_count": 3,
+                "summary": {
+                    "new": 1,
+                    "resolved": 0,
+                    "growing": 1,
+                    "shrinking": 0,
+                    "unchanged": 1,
+                },
+                "clusters": [
+                    {
+                        "signature": "failure:tool_call:db_lookup",
+                        "status": "new",
+                        "baseline_case_count": 0,
+                        "candidate_case_count": 1,
+                        "delta": 1,
+                        "baseline_examples": [],
+                        "candidate_examples": ["db-timeout-a"],
+                    },
+                    {
+                        "signature": "failure:tool_call:web_search",
+                        "status": "growing",
+                        "baseline_case_count": 2,
+                        "candidate_case_count": 3,
+                        "delta": 1,
+                        "baseline_examples": ["billing-timeout-a"],
+                        "candidate_examples": ["billing-timeout-a", "billing-timeout-b"],
+                    },
+                    {
+                        "signature": "failure:note:assertion",
+                        "status": "unchanged",
+                        "baseline_case_count": 2,
+                        "candidate_case_count": 2,
+                        "delta": 0,
+                        "baseline_examples": ["assertion-a"],
+                        "candidate_examples": ["assertion-a"],
+                    },
+                ],
+            }
+            compare_path = root / "compare.json"
+            write_json(compare_path, compare_payload)
+            output_dir = root / "issues"
+            manifest = generate_issue_drafts(compare_path, output_dir)
+            self.assertEqual(manifest["draft_count"], 2)
+            issue_files = sorted(path.name for path in output_dir.glob("*.md"))
+            self.assertEqual(len(issue_files), 2)
+            self.assertTrue(any("new" in name for name in issue_files))
+            self.assertTrue(any("growing" in name for name in issue_files))
 
 
 if __name__ == "__main__":

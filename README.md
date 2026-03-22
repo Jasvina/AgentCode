@@ -36,14 +36,14 @@ Build reusable benchmark packs from real agent traces.
 
 Path: `projects/failmap`
 
-Cluster recurring agent failures from TracePack packs and compare failure clusters between releases.
+Cluster recurring agent failures from TracePack packs, compare failure clusters between releases, and generate issue-ready triage drafts.
 
 ## Toolchain story
 
 ```text
 AgentCI   -> record and diff trajectories
 TracePack -> turn trajectories into reusable benchmark packs
-FailMap   -> cluster failures and compare what changed between releases
+FailMap   -> cluster failures, compare releases, and generate triage issues
 ```
 
 ## Monorepo structure
@@ -90,9 +90,8 @@ cd projects/failmap
 python -m venv .venv
 source .venv/bin/activate
 pip install -e .
-failmap cluster examples/sample_pack examples/clusters.json
 failmap compare examples/baseline_clusters.json examples/candidate_clusters.json examples/compare.json
-failmap compare-summary examples/compare.json
+failmap issue-drafts examples/compare.json examples/issues
 ```
 
 ## Why these projects have star potential

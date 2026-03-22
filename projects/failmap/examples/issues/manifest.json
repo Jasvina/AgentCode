@@ -1,0 +1,19 @@
+{
+  "draft_count": 2,
+  "drafts": [
+    {
+      "file": "001-new-failure-tool-call-db-lookup.md",
+      "signature": "failure:tool_call:db_lookup",
+      "status": "new",
+      "title": "[FailMap] new: failure:tool_call:db_lookup"
+    },
+    {
+      "file": "002-growing-failure-tool-call-web-search.md",
+      "signature": "failure:tool_call:web_search",
+      "status": "growing",
+      "title": "[FailMap] growing: failure:tool_call:web_search"
+    }
+  ],
+  "format": "failmap-issues-v1",
+  "source_compare": "examples/compare.json"
+}

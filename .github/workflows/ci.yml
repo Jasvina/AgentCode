@@ -70,3 +70,4 @@ jobs:
           failmap compare examples/baseline_clusters.json examples/candidate_clusters.json examples/compare.json
           failmap compare-summary examples/compare.json
           failmap compare-markdown examples/compare.json examples/compare.md
+          failmap issue-drafts examples/compare.json examples/issues

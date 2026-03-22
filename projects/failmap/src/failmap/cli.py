@@ -7,6 +7,7 @@ import sys
 from .cluster import build_clusters
 from .compare import compare_cluster_files
 from .io import write_json
+from .issues import generate_issue_drafts
 from .report import (
     load_clusters,
     markdown_compare_report,
@@ -56,6 +57,13 @@ def _cmd_compare_markdown(args: argparse.Namespace) -> int:
     return 0
 
 
+def _cmd_issue_drafts(args: argparse.Namespace) -> int:
+    statuses = set(args.status) if args.status else None
+    manifest = generate_issue_drafts(args.path, args.output_dir, include_statuses=statuses)
+    print(f"Wrote {manifest['draft_count']} issue drafts to {args.output_dir}")
+    return 0
+
+
 def build_parser() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(prog="failmap")
     subparsers = parser.add_subparsers(dest="command", required=True)
@@ -88,6 +96,17 @@ def build_parser() -> argparse.ArgumentParser:
     compare_markdown.add_argument("path")
     compare_markdown.add_argument("output")
     compare_markdown.set_defaults(func=_cmd_compare_markdown)
+
+    issue_drafts = subparsers.add_parser("issue-drafts", help="generate issue-ready markdown drafts from a compare json file")
+    issue_drafts.add_argument("path")
+    issue_drafts.add_argument("output_dir")
+    issue_drafts.add_argument(
+        "--status",
+        action="append",
+        choices=["new", "resolved", "growing", "shrinking", "unchanged"],
+        help="limit generated drafts to selected statuses; can be passed multiple times",
+    )
+    issue_drafts.set_defaults(func=_cmd_issue_drafts)
 
     return parser
 
