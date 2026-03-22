@@ -10,7 +10,7 @@ from tracepack.scanner import scan_directory
 
 
 class TracePackTests(unittest.TestCase):
-    def _make_episode(self, path: Path, episode_id: str, success: bool) -> None:
+    def _make_episode(self, path: Path, episode_id: str, success: bool, final_step_name: str = "tool") -> None:
         payload = {
             "episode_id": episode_id,
             "agent_name": "demo-agent",
@@ -20,7 +20,11 @@ class TracePackTests(unittest.TestCase):
             "final_output": "ok" if success else "Contact alice@example.com about INV-7 using sk_secret",
             "steps": [
                 {"kind": "model_call", "name": "planner", "payload": {"prompt": "p", "response": "r"}},
-                {"kind": "tool_call", "name": "tool", "payload": {"arguments": {"x": 1}, "output": {"ok": success}, "status": "ok" if success else "error"}},
+                {
+                    "kind": "tool_call",
+                    "name": final_step_name,
+                    "payload": {"arguments": {"x": 1}, "output": {"ok": success}, "status": "ok" if success else "error"},
+                },
             ],
         }
         path.write_text(json.dumps(payload), encoding="utf-8")
@@ -67,6 +71,23 @@ class TracePackTests(unittest.TestCase):
             self.assertEqual(count, 2)
             lines = jsonl_path.read_text(encoding='utf-8').strip().splitlines()
             self.assertEqual(len(lines), 2)
+
+    def test_build_pack_can_cap_cases_per_signature(self):
+        with tempfile.TemporaryDirectory() as tmpdir:
+            root = Path(tmpdir) / 'episodes'
+            root.mkdir()
+            self._make_episode(root / 'a.json', 'episode-a', False, final_step_name='search')
+            self._make_episode(root / 'b.json', 'episode-b', False, final_step_name='search')
+            self._make_episode(root / 'c.json', 'episode-c', False, final_step_name='db')
+            out = Path(tmpdir) / 'pack'
+            summary = build_pack(root, out, only_failures=True, max_per_signature=1)
+            self.assertEqual(len(summary.episodes), 2)
+            manifest = json.loads((out / 'manifest.json').read_text(encoding='utf-8'))
+            self.assertEqual(manifest['case_count'], 2)
+            self.assertEqual(manifest['max_per_signature'], 1)
+            signatures = [case['signature'] for case in manifest['cases']]
+            self.assertEqual(signatures.count('failure:tool_call:search'), 1)
+            self.assertEqual(signatures.count('failure:tool_call:db'), 1)
 
 
 if __name__ == '__main__':

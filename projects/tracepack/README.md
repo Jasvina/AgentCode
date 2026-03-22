@@ -26,6 +26,7 @@ TracePack focuses on that layer.
 - attaches case labels for downstream triage and analytics
 - detects simple sensitive patterns and can redact final outputs during pack build
 - exports packs to jsonl for dataset and eval workflows
+- can cap repeated signatures to keep packs diverse with `--max-per-signature`
 - supports `--only-failures` for failure-focused packs
 
 ## Quick start
@@ -60,6 +61,7 @@ Built pack with 1 cases at examples/demo_pack
 ```bash
 tracepack scan path/to/episodes
 tracepack build path/to/episodes path/to/pack --only-failures --redact
+tracepack build path/to/episodes path/to/pack --only-failures --max-per-signature 3
 tracepack inspect path/to/pack
 tracepack export-jsonl path/to/pack path/to/output.jsonl
 ```
@@ -81,6 +83,7 @@ pack/
 - stronger redaction policies for nested payloads
 - richer label files for human triage
 - export formats for eval harnesses and fine-tuning datasets
+- better pack balancing and sampling policies
 - clustering similar failures across large trace corpora
 
 ## License

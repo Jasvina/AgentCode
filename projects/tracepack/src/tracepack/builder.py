@@ -24,9 +24,20 @@ def build_pack(
     output_dir: str | Path,
     only_failures: bool = False,
     redact: bool = False,
+    max_per_signature: int | None = None,
 ) -> PackSummary:
     summary = scan_directory(source_dir)
     episodes = [episode for episode in summary.episodes if (not only_failures or not episode.success)]
+    if max_per_signature is not None:
+        kept: list = []
+        counts: dict[str, int] = {}
+        for episode in episodes:
+            count = counts.get(episode.signature, 0)
+            if count >= max_per_signature:
+                continue
+            kept.append(episode)
+            counts[episode.signature] = count + 1
+        episodes = kept
 
     out_root = Path(output_dir)
     cases_dir = out_root / "cases"
@@ -66,6 +77,7 @@ def build_pack(
         "case_count": len(manifest_cases),
         "only_failures": only_failures,
         "redacted": redact,
+        "max_per_signature": max_per_signature,
         "cases": manifest_cases,
     }
     out_root.mkdir(parents=True, exist_ok=True)

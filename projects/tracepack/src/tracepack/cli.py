@@ -9,6 +9,13 @@ from .builder import build_pack, export_pack_jsonl
 from .scanner import scan_directory
 
 
+def _positive_int(value: str) -> int:
+    parsed = int(value)
+    if parsed <= 0:
+        raise argparse.ArgumentTypeError("value must be > 0")
+    return parsed
+
+
 def _cmd_scan(args: argparse.Namespace) -> int:
     summary = scan_directory(args.path)
     kind_counts: dict[str, int] = {}
@@ -29,7 +36,13 @@ def _cmd_scan(args: argparse.Namespace) -> int:
 
 
 def _cmd_build(args: argparse.Namespace) -> int:
-    summary = build_pack(args.source, args.output, only_failures=args.only_failures, redact=args.redact)
+    summary = build_pack(
+        args.source,
+        args.output,
+        only_failures=args.only_failures,
+        redact=args.redact,
+        max_per_signature=args.max_per_signature,
+    )
     print(f"Built pack with {len(summary.episodes)} cases at {args.output}")
     return 0
 
@@ -40,6 +53,7 @@ def _cmd_inspect(args: argparse.Namespace) -> int:
     print(f"Cases: {manifest['case_count']}")
     print(f"Only failures: {manifest['only_failures']}")
     print(f"Redacted: {manifest.get('redacted', False)}")
+    print(f"Max per signature: {manifest.get('max_per_signature')}")
     signatures: dict[str, int] = {}
     labels: dict[str, int] = {}
     for case in manifest.get("cases", []):
@@ -75,6 +89,11 @@ def build_parser() -> argparse.ArgumentParser:
     build.add_argument("output")
     build.add_argument("--only-failures", action="store_true")
     build.add_argument("--redact", action="store_true", help="redact simple sensitive patterns in final outputs")
+    build.add_argument(
+        "--max-per-signature",
+        type=_positive_int,
+        help="keep at most N cases per failure signature when building a pack",
+    )
     build.set_defaults(func=_cmd_build)
 
     inspect_cmd = subparsers.add_parser("inspect", help="inspect an existing trace pack")

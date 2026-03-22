@@ -30,6 +30,7 @@
     }
   ],
   "format": "tracepack-v1",
+  "max_per_signature": 1,
   "only_failures": true,
   "redacted": true,
   "source_dir": "examples/source_episodes"
