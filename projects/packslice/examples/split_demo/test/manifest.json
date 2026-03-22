@@ -1,0 +1,47 @@
+{
+  "case_count": 2,
+  "cases": [
+    {
+      "agent_name": "research-agent",
+      "episode_id": "assert-c",
+      "file": "cases/006-assert-c.json",
+      "final_output": "assert c",
+      "labels": [
+        "signature:failure-note-assertion"
+      ],
+      "model": "gpt-4.1",
+      "prompt_version": "research-v1",
+      "signature": "failure:note:assertion",
+      "success": false,
+      "tags": [
+        "note"
+      ]
+    },
+    {
+      "agent_name": "billing-agent",
+      "episode_id": "billing-c",
+      "file": "cases/003-billing-c.json",
+      "final_output": "timeout c",
+      "labels": [
+        "signature:failure-tool-call-web-search"
+      ],
+      "model": "gpt-4.1-mini",
+      "prompt_version": "billing-v1",
+      "signature": "failure:tool_call:web_search",
+      "success": false,
+      "tags": [
+        "tool_call"
+      ]
+    }
+  ],
+  "format": "packslice-v1",
+  "group_by": "signature",
+  "ratios": {
+    "eval": 15,
+    "test": 15,
+    "train": 70
+  },
+  "source_format": "tracepack-v1",
+  "source_pack": "examples/sample_pack",
+  "split": "test"
+}

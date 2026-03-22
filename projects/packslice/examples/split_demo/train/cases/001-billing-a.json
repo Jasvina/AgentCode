@@ -1,0 +1,12 @@
+{
+  "agent_name": "billing-agent",
+  "episode_id": "billing-a",
+  "final_output": "timeout a",
+  "model": "gpt-4.1-mini",
+  "prompt_version": "billing-v1",
+  "signature": "failure:tool_call:web_search",
+  "success": false,
+  "tags": [
+    "tool_call"
+  ]
+}

@@ -1,0 +1,55 @@
+{
+  "format": "packslice-summary-v1",
+  "group_by": "signature",
+  "ratios": {
+    "eval": 15,
+    "test": 15,
+    "train": 70
+  },
+  "source_pack": "examples/sample_pack",
+  "splits": [
+    {
+      "case_count": 2,
+      "name": "train",
+      "signatures": [
+        {
+          "count": 1,
+          "signature": "failure:note:assertion"
+        },
+        {
+          "count": 1,
+          "signature": "failure:tool_call:web_search"
+        }
+      ]
+    },
+    {
+      "case_count": 2,
+      "name": "eval",
+      "signatures": [
+        {
+          "count": 1,
+          "signature": "failure:note:assertion"
+        },
+        {
+          "count": 1,
+          "signature": "failure:tool_call:web_search"
+        }
+      ]
+    },
+    {
+      "case_count": 2,
+      "name": "test",
+      "signatures": [
+        {
+          "count": 1,
+          "signature": "failure:note:assertion"
+        },
+        {
+          "count": 1,
+          "signature": "failure:tool_call:web_search"
+        }
+      ]
+    }
+  ],
+  "total_cases": 6
+}

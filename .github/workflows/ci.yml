@@ -81,3 +81,22 @@ jobs:
           failmap trend examples/trends.json examples/baseline_clusters.json examples/candidate_clusters.json examples/release3_clusters.json
           failmap trend-summary examples/trends.json
           failmap trend-markdown examples/trends.json examples/trends.md
+
+  packslice:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: projects/packslice
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - name: Install PackSlice
+        run: pip install -e .
+      - name: Run PackSlice tests
+        run: python -m unittest discover -s tests -v
+      - name: Run PackSlice examples
+        run: |
+          packslice split examples/sample_pack examples/split_demo --group-by signature --train-ratio 70 --eval-ratio 15 --test-ratio 15
+          packslice summarize examples/split_demo

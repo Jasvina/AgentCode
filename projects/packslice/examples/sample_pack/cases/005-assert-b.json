@@ -1,0 +1,12 @@
+{
+  "agent_name": "research-agent",
+  "episode_id": "assert-b",
+  "final_output": "assert b",
+  "model": "gpt-4.1",
+  "prompt_version": "research-v1",
+  "signature": "failure:note:assertion",
+  "success": false,
+  "tags": [
+    "note"
+  ]
+}

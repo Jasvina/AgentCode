@@ -10,11 +10,12 @@ I am deliberately not collecting random demos here. Each project is chosen from 
 
 ## Why this repo exists
 
-After surveying today's high-star Agent repositories, three opportunities stood out:
+After surveying today's high-star Agent repositories, four opportunities stood out:
 
 - teams can build agents, but still struggle to replay failures and guard against regressions
 - teams can trace agents, but still lack clean tooling to turn real trajectories into reusable eval packs and benchmark cases
 - teams can collect failures, but still lack a simple OSS layer for clustering recurring failure modes and prioritizing fixes across releases
+- teams can build eval packs, but still lack balanced split tooling for train/eval/test and release slicing
 
 `AgentCode` is a place to build those missing layers as focused OSS projects.
 
@@ -38,12 +39,19 @@ Path: `projects/failmap`
 
 Cluster recurring agent failures from TracePack packs, compare releases, generate issue-ready triage drafts with rules-driven routing, bundle them for planning, and track failure trends across snapshots.
 
+### 4. PackSlice
+
+Path: `projects/packslice`
+
+Create balanced train/eval/test splits from TracePack packs while preserving signature, agent, or model distributions.
+
 ## Toolchain story
 
 ```text
 AgentCI   -> record and diff trajectories
 TracePack -> turn trajectories into reusable benchmark packs
 FailMap   -> cluster failures, compare releases, generate triage issues, bundle work
+PackSlice -> split packs into balanced train/eval/test datasets
 ```
 
 ## Monorepo structure
@@ -53,6 +61,7 @@ projects/
   agentci/    replay-first regression testing
   tracepack/  trace-to-benchmark packaging
   failmap/    failure clustering and release comparison
+  packslice/  balanced dataset splitting for trace packs
 .github/
   workflows/  monorepo CI
 ```
@@ -104,6 +113,17 @@ failmap issue-bundle examples/issues examples/bundle
 failmap trend examples/trends.json examples/baseline_clusters.json examples/candidate_clusters.json examples/release3_clusters.json
 ```
 
+### PackSlice
+
+```bash
+cd projects/packslice
+python -m venv .venv
+source .venv/bin/activate
+pip install -e .
+packslice split examples/sample_pack examples/split_demo --group-by signature
+packslice summarize examples/split_demo
+```
+
 ## Why these projects have star potential
 
 High-star Agent infra repos usually win when they are:
@@ -120,6 +140,7 @@ The projects in this repo are designed around that rule.
 - add more AgentCI integrations and richer HTML diff reports
 - strengthen TracePack redaction policies, labeling workflows, and dataset export formats
 - add richer FailMap issue templates, trend views, and release-to-release cluster drilldowns
+- expand PackSlice with temporal and label-aware slicing
 - add more focused projects around agent eval infra, failure mining, and trajectory analytics
 
 ## License
