@@ -67,3 +67,6 @@ jobs:
           failmap cluster examples/sample_pack examples/clusters.json
           failmap summarize examples/clusters.json
           failmap markdown examples/clusters.json examples/report.md
+          failmap compare examples/baseline_clusters.json examples/candidate_clusters.json examples/compare.json
+          failmap compare-summary examples/compare.json
+          failmap compare-markdown examples/compare.json examples/compare.md

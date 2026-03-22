@@ -1,0 +1,59 @@
+{
+  "baseline": "examples/baseline_clusters.json",
+  "baseline_case_count": 4,
+  "candidate": "examples/candidate_clusters.json",
+  "candidate_case_count": 5,
+  "cluster_count": 3,
+  "clusters": [
+    {
+      "baseline_case_count": 0,
+      "baseline_examples": [],
+      "candidate_case_count": 1,
+      "candidate_examples": [
+        "db-timeout-a"
+      ],
+      "delta": 1,
+      "signature": "failure:tool_call:db_lookup",
+      "status": "new"
+    },
+    {
+      "baseline_case_count": 2,
+      "baseline_examples": [
+        "billing-timeout-a",
+        "billing-timeout-b"
+      ],
+      "candidate_case_count": 3,
+      "candidate_examples": [
+        "billing-timeout-a",
+        "billing-timeout-b",
+        "billing-timeout-c"
+      ],
+      "delta": 1,
+      "signature": "failure:tool_call:web_search",
+      "status": "growing"
+    },
+    {
+      "baseline_case_count": 2,
+      "baseline_examples": [
+        "assertion-failed-a",
+        "assertion-failed-b"
+      ],
+      "candidate_case_count": 2,
+      "candidate_examples": [
+        "assertion-failed-a",
+        "assertion-failed-b"
+      ],
+      "delta": 0,
+      "signature": "failure:note:assertion",
+      "status": "unchanged"
+    }
+  ],
+  "format": "failmap-compare-v1",
+  "summary": {
+    "growing": 1,
+    "new": 1,
+    "resolved": 0,
+    "shrinking": 0,
+    "unchanged": 1
+  }
+}

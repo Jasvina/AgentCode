@@ -1,0 +1,42 @@
+{
+  "case_count": 5,
+  "cluster_count": 3,
+  "clusters": [
+    {
+      "signature": "failure:tool_call:web_search",
+      "case_count": 3,
+      "successes": 0,
+      "failures": 3,
+      "agents": [{"name": "billing-agent", "count": 3}],
+      "models": [{"name": "gpt-4.1-mini", "count": 3}],
+      "tags": [{"name": "tool_call", "count": 3}],
+      "example_episode_ids": ["billing-timeout-a", "billing-timeout-b", "billing-timeout-c"],
+      "example_files": ["cases/001-billing-timeout-a.json", "cases/002-billing-timeout-b.json", "cases/005-billing-timeout-c.json"]
+    },
+    {
+      "signature": "failure:note:assertion",
+      "case_count": 2,
+      "successes": 0,
+      "failures": 2,
+      "agents": [{"name": "search-agent", "count": 1}, {"name": "research-agent", "count": 1}],
+      "models": [{"name": "gpt-4.1", "count": 2}],
+      "tags": [{"name": "note", "count": 2}, {"name": "tool_call", "count": 2}],
+      "example_episode_ids": ["assertion-failed-a", "assertion-failed-b"],
+      "example_files": ["cases/003-assertion-failed-a.json", "cases/004-assertion-failed-b.json"]
+    },
+    {
+      "signature": "failure:tool_call:db_lookup",
+      "case_count": 1,
+      "successes": 0,
+      "failures": 1,
+      "agents": [{"name": "db-agent", "count": 1}],
+      "models": [{"name": "gpt-4.1-mini", "count": 1}],
+      "tags": [{"name": "tool_call", "count": 1}],
+      "example_episode_ids": ["db-timeout-a"],
+      "example_files": ["cases/006-db-timeout-a.json"]
+    }
+  ],
+  "format": "failmap-v1",
+  "source_format": "tracepack-v1",
+  "source_pack": "examples/sample_pack_candidate"
+}

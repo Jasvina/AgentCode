@@ -14,7 +14,7 @@ After surveying today's high-star Agent repositories, three opportunities stood 
 
 - teams can build agents, but still struggle to replay failures and guard against regressions
 - teams can trace agents, but still lack clean tooling to turn real trajectories into reusable eval packs and benchmark cases
-- teams can collect failures, but still lack a simple OSS layer for clustering recurring failure modes and prioritizing fixes
+- teams can collect failures, but still lack a simple OSS layer for clustering recurring failure modes and prioritizing fixes across releases
 
 `AgentCode` is a place to build those missing layers as focused OSS projects.
 
@@ -26,46 +26,24 @@ Path: `projects/agentci`
 
 Replay-first regression testing for tool-using LLM agents.
 
-What it does:
-
-- records agent episodes as portable JSON
-- replays runs from frozen outputs
-- diffs baseline vs candidate trajectories
-- validates episodes in CI
-- includes experimental adapters for LangGraph-style events and OpenAI Agents-style items
-
 ### 2. TracePack
 
 Path: `projects/tracepack`
 
 Build reusable benchmark packs from real agent traces.
 
-What it does:
-
-- scans folders of AgentCI-compatible episodes
-- extracts case summaries, tags, and failure signatures
-- builds a shareable benchmark pack with a manifest and normalized case files
-- helps teams turn production traces into internal eval datasets
-
 ### 3. FailMap
 
 Path: `projects/failmap`
 
-Cluster recurring agent failures from TracePack packs.
-
-What it does:
-
-- reads a TracePack `manifest.json`
-- groups cases by failure signature and tags
-- computes cluster sizes, agents, models, and representative examples
-- exports JSON or Markdown reports for triage and roadmap planning
+Cluster recurring agent failures from TracePack packs and compare failure clusters between releases.
 
 ## Toolchain story
 
 ```text
 AgentCI   -> record and diff trajectories
 TracePack -> turn trajectories into reusable benchmark packs
-FailMap   -> cluster failures and prioritize what to fix next
+FailMap   -> cluster failures and compare what changed between releases
 ```
 
 ## Monorepo structure
@@ -74,7 +52,7 @@ FailMap   -> cluster failures and prioritize what to fix next
 projects/
   agentci/    replay-first regression testing
   tracepack/  trace-to-benchmark packaging
-  failmap/    failure clustering and reporting
+  failmap/    failure clustering and release comparison
 .github/
   workflows/  monorepo CI
 ```
@@ -113,8 +91,8 @@ python -m venv .venv
 source .venv/bin/activate
 pip install -e .
 failmap cluster examples/sample_pack examples/clusters.json
-failmap summarize examples/clusters.json
-failmap markdown examples/clusters.json examples/report.md
+failmap compare examples/baseline_clusters.json examples/candidate_clusters.json examples/compare.json
+failmap compare-summary examples/compare.json
 ```
 
 ## Why these projects have star potential
@@ -132,7 +110,7 @@ The projects in this repo are designed around that rule.
 
 - add more AgentCI integrations and richer HTML diff reports
 - add TracePack redaction rules, labeling workflows, and dataset export formats
-- add FailMap trend analysis, issue templates, and cluster comparison across releases
+- add FailMap issue templates, trend views, and release-to-release cluster drilldowns
 - add more focused projects around agent eval infra, failure mining, and trajectory analytics
 
 ## License

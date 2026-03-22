@@ -16,6 +16,7 @@ FailMap focuses on that missing step.
 - groups cases by failure signature
 - aggregates tags, agents, models, and representative examples
 - exports cluster reports as JSON or Markdown
+- compares two cluster snapshots to show which failure modes are new, resolved, growing, or shrinking
 - keeps the workflow simple enough for CI and team triage
 
 ## Quick start
@@ -27,17 +28,26 @@ pip install -e .
 failmap cluster examples/sample_pack examples/clusters.json
 failmap summarize examples/clusters.json
 failmap markdown examples/clusters.json examples/report.md
+failmap compare examples/baseline_clusters.json examples/candidate_clusters.json examples/compare.json
+failmap compare-summary examples/compare.json
+failmap compare-markdown examples/compare.json examples/compare.md
 ```
 
 ## Example output
 
 ```text
-$ failmap summarize examples/clusters.json
-Clusters: 2
-Cases: 4
-Top clusters:
-- failure:tool_call:web_search (2 cases)
-- failure:note:assertion (2 cases)
+$ failmap compare-summary examples/compare.json
+Compared clusters: 3
+Cases: 4 -> 5
+Changes:
+- new: 1
+- resolved: 0
+- growing: 1
+- shrinking: 0
+- unchanged: 1
+Top cluster deltas:
+- failure:tool_call:web_search (+1) [growing]
+- failure:tool_call:db_lookup (+1) [new]
 ```
 
 ## CLI
@@ -46,6 +56,9 @@ Top clusters:
 failmap cluster path/to/tracepack path/to/clusters.json
 failmap summarize path/to/clusters.json
 failmap markdown path/to/clusters.json path/to/report.md
+failmap compare baseline_clusters.json candidate_clusters.json path/to/compare.json
+failmap compare-summary path/to/compare.json
+failmap compare-markdown path/to/compare.json path/to/report.md
 ```
 
 ## Cluster fields
@@ -61,6 +74,14 @@ Each cluster contains:
 - `example_files`
 - `successes`
 - `failures`
+
+## Compare fields
+
+Each compare report contains:
+
+- `summary` counts for `new`, `resolved`, `growing`, `shrinking`, `unchanged`
+- per-cluster `baseline_case_count`, `candidate_case_count`, and `delta`
+- representative baseline and candidate episode ids
 
 ## Roadmap
 
