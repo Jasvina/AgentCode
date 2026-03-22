@@ -8,9 +8,18 @@
     {
       "baseline_case_count": 0,
       "baseline_examples": [],
+      "candidate_agents": [
+        "db-agent"
+      ],
       "candidate_case_count": 1,
       "candidate_examples": [
         "db-timeout-a"
+      ],
+      "candidate_models": [
+        "gpt-4.1-mini"
+      ],
+      "candidate_tags": [
+        "tool_call"
       ],
       "delta": 1,
       "signature": "failure:tool_call:db_lookup",
@@ -22,11 +31,20 @@
         "billing-timeout-a",
         "billing-timeout-b"
       ],
+      "candidate_agents": [
+        "billing-agent"
+      ],
       "candidate_case_count": 3,
       "candidate_examples": [
         "billing-timeout-a",
         "billing-timeout-b",
         "billing-timeout-c"
+      ],
+      "candidate_models": [
+        "gpt-4.1-mini"
+      ],
+      "candidate_tags": [
+        "tool_call"
       ],
       "delta": 1,
       "signature": "failure:tool_call:web_search",
@@ -38,10 +56,21 @@
         "assertion-failed-a",
         "assertion-failed-b"
       ],
+      "candidate_agents": [
+        "search-agent",
+        "research-agent"
+      ],
       "candidate_case_count": 2,
       "candidate_examples": [
         "assertion-failed-a",
         "assertion-failed-b"
+      ],
+      "candidate_models": [
+        "gpt-4.1"
+      ],
+      "candidate_tags": [
+        "note",
+        "tool_call"
       ],
       "delta": 0,
       "signature": "failure:note:assertion",

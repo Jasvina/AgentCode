@@ -1,27 +1,39 @@
 ---
 title: "[FailMap] growing: failure:tool_call:web_search"
-priority: P1
+priority: P0
 suggested_owner: tooling
+routing_rules:
+  - tooling-escalation
 labels:
+  - area:tools
   - failmap
-  - status:growing
-  - priority:P1
+  - priority:P0
   - signature:failure-tool-call-web-search
+  - status:growing
+  - triage:auto
 ---
 
 # [FailMap] growing: failure:tool_call:web_search
 
 ## Triage metadata
 
-- Priority: `P1`
+- Priority: `P0`
 - Suggested owner: `tooling`
-- Labels: `failmap, status:growing, priority:P1, signature:failure-tool-call-web-search`
+- Labels: `area:tools, failmap, priority:P0, signature:failure-tool-call-web-search, status:growing, triage:auto`
+
+- Routing rules: `tooling-escalation`
 
 ## Why this matters
 
 - Status: `growing`
 - Signature: `failure:tool_call:web_search`
 - Case delta: `2 -> 3 (+1)`
+
+## Candidate cluster context
+
+- Agents: billing-agent
+- Models: gpt-4.1-mini
+- Tags: tool_call
 
 ## Representative examples
 

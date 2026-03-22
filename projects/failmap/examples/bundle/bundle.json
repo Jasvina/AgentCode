@@ -4,12 +4,17 @@
       {
         "file": "002-growing-failure-tool-call-web-search.md",
         "labels": [
+          "area:tools",
           "failmap",
+          "priority:P0",
+          "signature:failure-tool-call-web-search",
           "status:growing",
-          "priority:P1",
-          "signature:failure-tool-call-web-search"
+          "triage:auto"
         ],
-        "priority": "P1",
+        "matched_rules": [
+          "tooling-escalation"
+        ],
+        "priority": "P0",
         "signature": "failure:tool_call:web_search",
         "status": "growing",
         "suggested_owner": "tooling",
@@ -18,12 +23,17 @@
       {
         "file": "001-new-failure-tool-call-db-lookup.md",
         "labels": [
+          "area:tools",
           "failmap",
+          "priority:P0",
+          "signature:failure-tool-call-db-lookup",
           "status:new",
-          "priority:P1",
-          "signature:failure-tool-call-db-lookup"
+          "triage:auto"
         ],
-        "priority": "P1",
+        "matched_rules": [
+          "tooling-escalation"
+        ],
+        "priority": "P0",
         "signature": "failure:tool_call:db_lookup",
         "status": "new",
         "suggested_owner": "tooling",
@@ -32,16 +42,21 @@
     ]
   },
   "by_priority": {
-    "P1": [
+    "P0": [
       {
         "file": "002-growing-failure-tool-call-web-search.md",
         "labels": [
+          "area:tools",
           "failmap",
+          "priority:P0",
+          "signature:failure-tool-call-web-search",
           "status:growing",
-          "priority:P1",
-          "signature:failure-tool-call-web-search"
+          "triage:auto"
         ],
-        "priority": "P1",
+        "matched_rules": [
+          "tooling-escalation"
+        ],
+        "priority": "P0",
         "signature": "failure:tool_call:web_search",
         "status": "growing",
         "suggested_owner": "tooling",
@@ -50,12 +65,17 @@
       {
         "file": "001-new-failure-tool-call-db-lookup.md",
         "labels": [
+          "area:tools",
           "failmap",
+          "priority:P0",
+          "signature:failure-tool-call-db-lookup",
           "status:new",
-          "priority:P1",
-          "signature:failure-tool-call-db-lookup"
+          "triage:auto"
         ],
-        "priority": "P1",
+        "matched_rules": [
+          "tooling-escalation"
+        ],
+        "priority": "P0",
         "signature": "failure:tool_call:db_lookup",
         "status": "new",
         "suggested_owner": "tooling",
@@ -68,12 +88,17 @@
       {
         "file": "002-growing-failure-tool-call-web-search.md",
         "labels": [
+          "area:tools",
           "failmap",
+          "priority:P0",
+          "signature:failure-tool-call-web-search",
           "status:growing",
-          "priority:P1",
-          "signature:failure-tool-call-web-search"
+          "triage:auto"
         ],
-        "priority": "P1",
+        "matched_rules": [
+          "tooling-escalation"
+        ],
+        "priority": "P0",
         "signature": "failure:tool_call:web_search",
         "status": "growing",
         "suggested_owner": "tooling",
@@ -84,12 +109,17 @@
       {
         "file": "001-new-failure-tool-call-db-lookup.md",
         "labels": [
+          "area:tools",
           "failmap",
+          "priority:P0",
+          "signature:failure-tool-call-db-lookup",
           "status:new",
-          "priority:P1",
-          "signature:failure-tool-call-db-lookup"
+          "triage:auto"
         ],
-        "priority": "P1",
+        "matched_rules": [
+          "tooling-escalation"
+        ],
+        "priority": "P0",
         "signature": "failure:tool_call:db_lookup",
         "status": "new",
         "suggested_owner": "tooling",
@@ -102,12 +132,17 @@
     {
       "file": "001-new-failure-tool-call-db-lookup.md",
       "labels": [
+        "area:tools",
         "failmap",
+        "priority:P0",
+        "signature:failure-tool-call-db-lookup",
         "status:new",
-        "priority:P1",
-        "signature:failure-tool-call-db-lookup"
+        "triage:auto"
       ],
-      "priority": "P1",
+      "matched_rules": [
+        "tooling-escalation"
+      ],
+      "priority": "P0",
       "signature": "failure:tool_call:db_lookup",
       "status": "new",
       "suggested_owner": "tooling",
@@ -116,12 +151,17 @@
     {
       "file": "002-growing-failure-tool-call-web-search.md",
       "labels": [
+        "area:tools",
         "failmap",
+        "priority:P0",
+        "signature:failure-tool-call-web-search",
         "status:growing",
-        "priority:P1",
-        "signature:failure-tool-call-web-search"
+        "triage:auto"
       ],
-      "priority": "P1",
+      "matched_rules": [
+        "tooling-escalation"
+      ],
+      "priority": "P0",
       "signature": "failure:tool_call:web_search",
       "status": "growing",
       "suggested_owner": "tooling",
@@ -133,7 +173,7 @@
     "tooling": 2
   },
   "priority_counts": {
-    "P1": 2
+    "P0": 2
   },
   "source_manifest": "examples/issues",
   "status_counts": {

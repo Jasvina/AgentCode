@@ -57,6 +57,9 @@ def compare_cluster_files(baseline_path: str | Path, candidate_path: str | Path)
                 "delta": candidate_count - baseline_count,
                 "baseline_examples": left.get("example_episode_ids", []),
                 "candidate_examples": right.get("example_episode_ids", []),
+                "candidate_agents": [item.get("name") for item in right.get("agents", [])],
+                "candidate_models": [item.get("name") for item in right.get("models", [])],
+                "candidate_tags": [item.get("name") for item in right.get("tags", [])],
             }
         )
 

@@ -19,6 +19,7 @@ FailMap focuses on that missing step.
 - compares two cluster snapshots to show which failure modes are new, resolved, growing, or shrinking
 - generates issue-ready Markdown drafts for the clusters that need triage
 - adds triage metadata such as `priority`, `labels`, and `suggested_owner`
+- supports rules-driven routing so teams can map failure signatures and tags to owners and priorities
 - builds batch issue bundles grouped by priority and owner for planning meetings or bulk import workflows
 - tracks signature trends across multiple releases to show which failures are persisting, growing, or newly appearing
 - keeps the workflow simple enough for CI and team triage
@@ -35,7 +36,7 @@ failmap markdown examples/clusters.json examples/report.md
 failmap compare examples/baseline_clusters.json examples/candidate_clusters.json examples/compare.json
 failmap compare-summary examples/compare.json
 failmap compare-markdown examples/compare.json examples/compare.md
-failmap issue-drafts examples/compare.json examples/issues
+failmap issue-drafts examples/compare.json examples/issues --rules examples/triage_rules.json
 failmap issue-bundle examples/issues examples/bundle
 failmap issue-bundle-summary examples/bundle/bundle.json
 failmap trend examples/trends.json examples/baseline_clusters.json examples/candidate_clusters.json examples/release3_clusters.json
@@ -49,21 +50,35 @@ failmap trend-markdown examples/trends.json examples/trends.md
 $ failmap issue-bundle-summary examples/bundle/bundle.json
 Drafts: 2
 By priority:
-- P1: 2
+- P0: 2
 By owner:
-- tooling: 1
-- evals: 1
+- tooling: 2
 ```
 
 Example metadata emitted into each issue draft:
 
 ```yaml
-priority: P1
+priority: P0
 suggested_owner: tooling
 labels:
   - failmap
   - status:new
-  - priority:P1
+  - priority:P0
+```
+
+Example routing rules:
+
+```json
+{
+  "defaults": {"labels": ["triage:auto"]},
+  "rules": [
+    {
+      "name": "tooling-escalation",
+      "match": {"status_in": ["new", "growing"], "tag_in": ["tool_call"]},
+      "set": {"owner": "tooling", "priority": "P0", "labels": ["area:tools"]}
+    }
+  ]
+}
 ```
 
 Example trend summary:
@@ -89,7 +104,7 @@ failmap markdown path/to/clusters.json path/to/report.md
 failmap compare baseline_clusters.json candidate_clusters.json path/to/compare.json
 failmap compare-summary path/to/compare.json
 failmap compare-markdown path/to/compare.json path/to/report.md
-failmap issue-drafts path/to/compare.json path/to/issues_dir --status new --status growing
+failmap issue-drafts path/to/compare.json path/to/issues_dir --rules path/to/triage_rules.json --status new --status growing
 failmap issue-bundle path/to/issues_dir path/to/bundle_dir
 failmap issue-bundle-summary path/to/bundle.json
 failmap trend path/to/trends.json baseline.json candidate.json release3.json
@@ -126,8 +141,10 @@ Each generated issue draft includes:
 - a ready-to-paste issue title
 - the failure signature and status
 - case delta between baseline and candidate
+- candidate cluster context such as top agents, models, and tags
 - representative baseline and candidate examples
 - triage metadata: `priority`, `suggested_owner`, `labels`
+- matched routing rules, when a rules file is provided
 - suggested next steps for triage and regression coverage
 
 ## Issue bundle output

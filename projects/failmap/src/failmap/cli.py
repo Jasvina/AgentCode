@@ -62,7 +62,7 @@ def _cmd_compare_markdown(args: argparse.Namespace) -> int:
 
 def _cmd_issue_drafts(args: argparse.Namespace) -> int:
     statuses = set(args.status) if args.status else None
-    manifest = generate_issue_drafts(args.path, args.output_dir, include_statuses=statuses)
+    manifest = generate_issue_drafts(args.path, args.output_dir, include_statuses=statuses, rules_path=args.rules)
     print(f"Wrote {manifest['draft_count']} issue drafts to {args.output_dir}")
     return 0
 
@@ -142,6 +142,7 @@ def build_parser() -> argparse.ArgumentParser:
     issue_drafts = subparsers.add_parser("issue-drafts", help="generate issue-ready markdown drafts from a compare json file")
     issue_drafts.add_argument("path")
     issue_drafts.add_argument("output_dir")
+    issue_drafts.add_argument("--rules", help="optional triage routing rules json file")
     issue_drafts.add_argument(
         "--status",
         action="append",

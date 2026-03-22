@@ -4,12 +4,17 @@
     {
       "file": "001-new-failure-tool-call-db-lookup.md",
       "labels": [
+        "area:tools",
         "failmap",
+        "priority:P0",
+        "signature:failure-tool-call-db-lookup",
         "status:new",
-        "priority:P1",
-        "signature:failure-tool-call-db-lookup"
+        "triage:auto"
       ],
-      "priority": "P1",
+      "matched_rules": [
+        "tooling-escalation"
+      ],
+      "priority": "P0",
       "signature": "failure:tool_call:db_lookup",
       "status": "new",
       "suggested_owner": "tooling",
@@ -18,12 +23,17 @@
     {
       "file": "002-growing-failure-tool-call-web-search.md",
       "labels": [
+        "area:tools",
         "failmap",
+        "priority:P0",
+        "signature:failure-tool-call-web-search",
         "status:growing",
-        "priority:P1",
-        "signature:failure-tool-call-web-search"
+        "triage:auto"
       ],
-      "priority": "P1",
+      "matched_rules": [
+        "tooling-escalation"
+      ],
+      "priority": "P0",
       "signature": "failure:tool_call:web_search",
       "status": "growing",
       "suggested_owner": "tooling",
@@ -31,5 +41,6 @@
     }
   ],
   "format": "failmap-issues-v1",
-  "source_compare": "examples/compare.json"
+  "source_compare": "examples/compare.json",
+  "source_rules": "examples/triage_rules.json"
 }

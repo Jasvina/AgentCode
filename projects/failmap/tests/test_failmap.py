@@ -114,6 +114,7 @@ class FailMapTests(unittest.TestCase):
             markdown = markdown_compare_report(compare_payload)
             self.assertEqual(compare_payload["summary"]["new"], 1)
             self.assertEqual(compare_payload["summary"]["growing"], 1)
+            self.assertIn("tool_call", compare_payload["clusters"][0]["candidate_tags"])
             self.assertIn("growing", summary)
             self.assertIn("# FailMap Compare Report", markdown)
             self.assertIn("failure:tool_call:db_lookup", markdown)
@@ -142,6 +143,9 @@ class FailMapTests(unittest.TestCase):
                         "delta": 1,
                         "baseline_examples": [],
                         "candidate_examples": ["db-timeout-a"],
+                        "candidate_agents": ["db-agent"],
+                        "candidate_models": ["gpt-4.1-mini"],
+                        "candidate_tags": ["tool_call"],
                     },
                     {
                         "signature": "failure:tool_call:web_search",
@@ -151,6 +155,9 @@ class FailMapTests(unittest.TestCase):
                         "delta": 1,
                         "baseline_examples": ["billing-timeout-a"],
                         "candidate_examples": ["billing-timeout-a", "billing-timeout-b"],
+                        "candidate_agents": ["billing-agent"],
+                        "candidate_models": ["gpt-4.1-mini"],
+                        "candidate_tags": ["tool_call", "model_call"],
                     },
                     {
                         "signature": "failure:note:assertion",
@@ -160,23 +167,43 @@ class FailMapTests(unittest.TestCase):
                         "delta": 0,
                         "baseline_examples": ["assertion-a"],
                         "candidate_examples": ["assertion-a"],
+                        "candidate_agents": ["search-agent"],
+                        "candidate_models": ["gpt-4.1"],
+                        "candidate_tags": ["note", "tool_call"],
                     },
                 ],
             }
             compare_path = root / "compare.json"
             write_json(compare_path, compare_payload)
+            rules_path = root / "rules.json"
+            write_json(
+                rules_path,
+                {
+                    "defaults": {"labels": ["triage:auto"]},
+                    "rules": [
+                        {
+                            "name": "tooling-escalation",
+                            "match": {"status_in": ["new", "growing"], "tag_in": ["tool_call"]},
+                            "set": {"owner": "tooling", "priority": "P0", "labels": ["area:tools"]},
+                        }
+                    ],
+                },
+            )
             output_dir = root / "issues"
-            manifest = generate_issue_drafts(compare_path, output_dir)
+            manifest = generate_issue_drafts(compare_path, output_dir, rules_path=rules_path)
             self.assertEqual(manifest["draft_count"], 2)
             issue_files = sorted(path.name for path in output_dir.glob("*.md"))
             self.assertEqual(len(issue_files), 2)
             self.assertTrue(any("new" in name for name in issue_files))
             self.assertTrue(any("growing" in name for name in issue_files))
-            self.assertEqual(manifest["drafts"][0]["priority"], "P1")
+            self.assertEqual(manifest["drafts"][0]["priority"], "P0")
             self.assertIn("failmap", manifest["drafts"][0]["labels"])
+            self.assertIn("area:tools", manifest["drafts"][0]["labels"])
+            self.assertIn("tooling-escalation", manifest["drafts"][0]["matched_rules"])
             first_issue = (output_dir / issue_files[0]).read_text(encoding="utf-8")
             self.assertIn("priority:", first_issue)
             self.assertIn("suggested_owner:", first_issue)
+            self.assertIn("routing_rules:", first_issue)
 
     def test_issue_bundle_groups_by_priority_and_owner(self):
         with tempfile.TemporaryDirectory() as tmpdir:

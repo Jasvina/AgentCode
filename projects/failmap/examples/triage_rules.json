@@ -1,0 +1,43 @@
+{
+  "defaults": {
+    "labels": [
+      "triage:auto"
+    ]
+  },
+  "rules": [
+    {
+      "name": "tooling-escalation",
+      "match": {
+        "status_in": [
+          "new",
+          "growing"
+        ],
+        "tag_in": [
+          "tool_call"
+        ]
+      },
+      "set": {
+        "labels": [
+          "area:tools"
+        ],
+        "owner": "tooling",
+        "priority": "P0"
+      }
+    },
+    {
+      "name": "assertion-evals",
+      "match": {
+        "signature_contains": [
+          "assertion"
+        ]
+      },
+      "set": {
+        "labels": [
+          "area:evals"
+        ],
+        "owner": "evals",
+        "priority": "P1"
+      }
+    }
+  ]
+}

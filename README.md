@@ -36,7 +36,7 @@ Build reusable benchmark packs from real agent traces, with lightweight redactio
 
 Path: `projects/failmap`
 
-Cluster recurring agent failures from TracePack packs, compare releases, generate issue-ready triage drafts, bundle them for planning, and track failure trends across snapshots.
+Cluster recurring agent failures from TracePack packs, compare releases, generate issue-ready triage drafts with rules-driven routing, bundle them for planning, and track failure trends across snapshots.
 
 ## Toolchain story
 
@@ -96,7 +96,7 @@ python -m venv .venv
 source .venv/bin/activate
 pip install -e .
 failmap compare examples/baseline_clusters.json examples/candidate_clusters.json examples/compare.json
-failmap issue-drafts examples/compare.json examples/issues
+failmap issue-drafts examples/compare.json examples/issues --rules examples/triage_rules.json
 failmap issue-bundle examples/issues examples/bundle
 failmap trend examples/trends.json examples/baseline_clusters.json examples/candidate_clusters.json examples/release3_clusters.json
 ```
