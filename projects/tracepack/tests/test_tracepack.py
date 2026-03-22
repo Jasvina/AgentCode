@@ -5,7 +5,7 @@ import tempfile
 import unittest
 from pathlib import Path
 
-from tracepack.builder import build_pack, export_pack_jsonl
+from tracepack.builder import build_pack, export_pack_chat_jsonl, export_pack_jsonl
 from tracepack.scanner import scan_directory
 
 
@@ -108,6 +108,24 @@ class TracePackTests(unittest.TestCase):
             signatures = [case['signature'] for case in manifest['cases']]
             self.assertEqual(signatures.count('failure:tool_call:search'), 1)
             self.assertEqual(signatures.count('failure:tool_call:db'), 1)
+
+    def test_export_chat_jsonl_outputs_messages_and_can_filter_success(self):
+        with tempfile.TemporaryDirectory() as tmpdir:
+            root = Path(tmpdir) / 'episodes'
+            root.mkdir()
+            self._make_episode(root / 'a.json', 'episode-a', True)
+            self._make_episode(root / 'b.json', 'episode-b', False)
+            out = Path(tmpdir) / 'pack'
+            build_pack(root, out, redact=True)
+            chat_path = Path(tmpdir) / 'chat.jsonl'
+            count = export_pack_chat_jsonl(out, chat_path, success_only=True)
+            self.assertEqual(count, 1)
+            rows = [json.loads(line) for line in chat_path.read_text(encoding='utf-8').splitlines() if line.strip()]
+            self.assertEqual(len(rows), 1)
+            self.assertEqual(rows[0]['messages'][0]['role'], 'user')
+            self.assertEqual(rows[0]['messages'][0]['content'], 'p')
+            self.assertEqual(rows[0]['messages'][1]['role'], 'assistant')
+            self.assertEqual(rows[0]['metadata']['episode_id'], 'episode-a')
 
 
 if __name__ == '__main__':

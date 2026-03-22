@@ -3,7 +3,7 @@ from __future__ import annotations
 import json
 from pathlib import Path
 
-from .export import export_manifest_to_jsonl
+from .export import export_manifest_to_jsonl, export_pack_to_chat_jsonl
 from .redact import redact_text, redact_value
 from .scanner import PackSummary, scan_directory
 
@@ -100,3 +100,12 @@ def build_pack(
 
 def export_pack_jsonl(pack_dir: str | Path, output_path: str | Path) -> int:
     return export_manifest_to_jsonl(pack_dir, output_path)
+
+
+def export_pack_chat_jsonl(
+    pack_dir: str | Path,
+    output_path: str | Path,
+    *,
+    success_only: bool = False,
+) -> int:
+    return export_pack_to_chat_jsonl(pack_dir, output_path, success_only=success_only)

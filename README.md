@@ -30,7 +30,7 @@ Replay-first regression testing for tool-using LLM agents, with portable episode
 
 Path: `projects/tracepack`
 
-Build reusable benchmark packs from real agent traces, with recursive redaction, case labels, jsonl export, and signature-aware sampling for eval pipelines.
+Build reusable benchmark packs from real agent traces, with recursive redaction, case labels, jsonl/chat export, and signature-aware sampling for eval pipelines.
 
 ### 3. FailMap
 
@@ -88,6 +88,7 @@ tracepack scan examples/source_episodes
 tracepack build examples/source_episodes examples/demo_pack --only-failures --redact --max-per-signature 1
 tracepack inspect examples/demo_pack
 tracepack export-jsonl examples/demo_pack examples/demo_pack.jsonl
+tracepack export-chat examples/demo_pack examples/demo_chat.jsonl
 ```
 
 ### FailMap

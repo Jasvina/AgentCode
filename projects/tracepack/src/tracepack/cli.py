@@ -5,7 +5,7 @@ import json
 from pathlib import Path
 import sys
 
-from .builder import build_pack, export_pack_jsonl
+from .builder import build_pack, export_pack_chat_jsonl, export_pack_jsonl
 from .scanner import scan_directory
 
 
@@ -76,6 +76,12 @@ def _cmd_export_jsonl(args: argparse.Namespace) -> int:
     return 0
 
 
+def _cmd_export_chat(args: argparse.Namespace) -> int:
+    count = export_pack_chat_jsonl(args.pack, args.output, success_only=args.success_only)
+    print(f"Exported {count} chat rows to {args.output}")
+    return 0
+
+
 def build_parser() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(prog="tracepack")
     subparsers = parser.add_subparsers(dest="command", required=True)
@@ -104,6 +110,15 @@ def build_parser() -> argparse.ArgumentParser:
     export_jsonl.add_argument("pack")
     export_jsonl.add_argument("output")
     export_jsonl.set_defaults(func=_cmd_export_jsonl)
+
+    export_chat = subparsers.add_parser(
+        "export-chat",
+        help="export a pack as chat-style jsonl for fine-tuning or eval workflows",
+    )
+    export_chat.add_argument("pack")
+    export_chat.add_argument("output")
+    export_chat.add_argument("--success-only", action="store_true", help="only export successful cases")
+    export_chat.set_defaults(func=_cmd_export_chat)
 
     return parser
 

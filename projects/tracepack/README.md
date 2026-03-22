@@ -26,6 +26,7 @@ TracePack focuses on that layer.
 - attaches case labels for downstream triage and analytics
 - detects simple sensitive patterns and can recursively redact final outputs, metrics, and nested step payloads during pack build
 - exports packs to jsonl for dataset and eval workflows
+- exports chat-style jsonl for fine-tuning and evaluator pipelines
 - can cap repeated signatures to keep packs diverse with `--max-per-signature`
 - supports `--only-failures` for failure-focused packs
 
@@ -64,6 +65,7 @@ tracepack build path/to/episodes path/to/pack --only-failures --redact
 tracepack build path/to/episodes path/to/pack --only-failures --max-per-signature 3
 tracepack inspect path/to/pack
 tracepack export-jsonl path/to/pack path/to/output.jsonl
+tracepack export-chat path/to/pack path/to/chat.jsonl --success-only
 ```
 
 ## Pack layout

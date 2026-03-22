@@ -51,6 +51,7 @@ jobs:
           tracepack build examples/source_episodes examples/demo_pack --only-failures --redact --max-per-signature 1
           tracepack inspect examples/demo_pack
           tracepack export-jsonl examples/demo_pack examples/demo_pack.jsonl
+          tracepack export-chat examples/demo_pack examples/demo_chat.jsonl
 
   failmap:
     runs-on: ubuntu-latest
