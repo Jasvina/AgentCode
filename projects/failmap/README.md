@@ -20,6 +20,7 @@ FailMap focuses on that missing step.
 - generates issue-ready Markdown drafts for the clusters that need triage
 - adds triage metadata such as `priority`, `labels`, and `suggested_owner`
 - builds batch issue bundles grouped by priority and owner for planning meetings or bulk import workflows
+- tracks signature trends across multiple releases to show which failures are persisting, growing, or newly appearing
 - keeps the workflow simple enough for CI and team triage
 
 ## Quick start
@@ -37,6 +38,9 @@ failmap compare-markdown examples/compare.json examples/compare.md
 failmap issue-drafts examples/compare.json examples/issues
 failmap issue-bundle examples/issues examples/bundle
 failmap issue-bundle-summary examples/bundle/bundle.json
+failmap trend examples/trends.json examples/baseline_clusters.json examples/candidate_clusters.json examples/release3_clusters.json
+failmap trend-summary examples/trends.json
+failmap trend-markdown examples/trends.json examples/trends.md
 ```
 
 ## Example output
@@ -62,6 +66,20 @@ labels:
   - priority:P1
 ```
 
+Example trend summary:
+
+```text
+$ failmap trend-summary examples/trends.json
+Snapshots: 3
+Tracked signatures: 4
+Latest snapshot changes:
+- new: 1
+- resolved: 1
+- growing: 0
+- shrinking: 2
+- stable: 0
+```
+
 ## CLI
 
 ```bash
@@ -74,6 +92,9 @@ failmap compare-markdown path/to/compare.json path/to/report.md
 failmap issue-drafts path/to/compare.json path/to/issues_dir --status new --status growing
 failmap issue-bundle path/to/issues_dir path/to/bundle_dir
 failmap issue-bundle-summary path/to/bundle.json
+failmap trend path/to/trends.json baseline.json candidate.json release3.json
+failmap trend-summary path/to/trends.json
+failmap trend-markdown path/to/trends.json path/to/report.md
 ```
 
 ## Cluster fields
@@ -117,12 +138,21 @@ Each generated issue bundle includes:
 - `SUMMARY.md` for planning reviews and standups
 - compact counts for prioritization and ownership assignment
 
+## Trend report output
+
+Each generated trend report includes:
+
+- ordered snapshots and their labels
+- per-signature counts across releases
+- latest-release status such as `new_in_latest`, `growing_in_latest`, or `shrinking_in_latest`
+- peak counts and first/last seen metadata for prioritization
+
 ## Roadmap
 
 - compare clusters across releases
 - cluster by semantic similarity in addition to signature
 - emit GitHub issue templates for the largest recurring failures
-- trend dashboards for eval packs over time
+- richer trend dashboards for eval packs over time
 
 ## License
 

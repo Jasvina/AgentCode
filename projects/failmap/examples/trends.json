@@ -1,0 +1,131 @@
+{
+  "format": "failmap-trends-v1",
+  "signature_count": 4,
+  "signatures": [
+    {
+      "delta_latest": 2,
+      "first_seen": "release3_clusters",
+      "last_seen": "release3_clusters",
+      "latest_case_count": 2,
+      "latest_status": "new_in_latest",
+      "peak_case_count": 2,
+      "points": [
+        {
+          "case_count": 0,
+          "label": "baseline_clusters"
+        },
+        {
+          "case_count": 0,
+          "label": "candidate_clusters"
+        },
+        {
+          "case_count": 2,
+          "label": "release3_clusters"
+        }
+      ],
+      "previous_case_count": 0,
+      "signature": "failure:model_call:planner"
+    },
+    {
+      "delta_latest": -2,
+      "first_seen": "baseline_clusters",
+      "last_seen": "release3_clusters",
+      "latest_case_count": 1,
+      "latest_status": "shrinking_in_latest",
+      "peak_case_count": 3,
+      "points": [
+        {
+          "case_count": 2,
+          "label": "baseline_clusters"
+        },
+        {
+          "case_count": 3,
+          "label": "candidate_clusters"
+        },
+        {
+          "case_count": 1,
+          "label": "release3_clusters"
+        }
+      ],
+      "previous_case_count": 3,
+      "signature": "failure:tool_call:web_search"
+    },
+    {
+      "delta_latest": -1,
+      "first_seen": "baseline_clusters",
+      "last_seen": "release3_clusters",
+      "latest_case_count": 1,
+      "latest_status": "shrinking_in_latest",
+      "peak_case_count": 2,
+      "points": [
+        {
+          "case_count": 2,
+          "label": "baseline_clusters"
+        },
+        {
+          "case_count": 2,
+          "label": "candidate_clusters"
+        },
+        {
+          "case_count": 1,
+          "label": "release3_clusters"
+        }
+      ],
+      "previous_case_count": 2,
+      "signature": "failure:note:assertion"
+    },
+    {
+      "delta_latest": -1,
+      "first_seen": "candidate_clusters",
+      "last_seen": "candidate_clusters",
+      "latest_case_count": 0,
+      "latest_status": "resolved_in_latest",
+      "peak_case_count": 1,
+      "points": [
+        {
+          "case_count": 0,
+          "label": "baseline_clusters"
+        },
+        {
+          "case_count": 1,
+          "label": "candidate_clusters"
+        },
+        {
+          "case_count": 0,
+          "label": "release3_clusters"
+        }
+      ],
+      "previous_case_count": 1,
+      "signature": "failure:tool_call:db_lookup"
+    }
+  ],
+  "snapshot_count": 3,
+  "snapshots": [
+    {
+      "case_count": 4,
+      "cluster_count": 2,
+      "label": "baseline_clusters",
+      "path": "examples/baseline_clusters.json"
+    },
+    {
+      "case_count": 5,
+      "cluster_count": 3,
+      "label": "candidate_clusters",
+      "path": "examples/candidate_clusters.json"
+    },
+    {
+      "case_count": 4,
+      "cluster_count": 3,
+      "label": "release3_clusters",
+      "path": "examples/release3_clusters.json"
+    }
+  ],
+  "summary": {
+    "absent_in_latest": 0,
+    "growing_in_latest": 0,
+    "new_in_latest": 1,
+    "resolved_in_latest": 1,
+    "shrinking_in_latest": 2,
+    "stable_in_latest": 0
+  }
+}

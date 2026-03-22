@@ -12,9 +12,12 @@ from .report import (
     load_clusters,
     markdown_compare_report,
     markdown_report,
+    markdown_trend_report,
     summarize_clusters,
     summarize_compare,
+    summarize_trends,
 )
+from .trends import build_trend_report
 
 
 def _cmd_cluster(args: argparse.Namespace) -> int:
@@ -83,6 +86,26 @@ def _cmd_issue_bundle_summary(args: argparse.Namespace) -> int:
     return 0
 
 
+def _cmd_trend(args: argparse.Namespace) -> int:
+    payload = build_trend_report(args.paths)
+    write_json(args.output, payload)
+    print(f"Wrote trend report to {args.output}")
+    return 0
+
+
+def _cmd_trend_summary(args: argparse.Namespace) -> int:
+    payload = load_clusters(args.path)
+    print(summarize_trends(payload))
+    return 0
+
+
+def _cmd_trend_markdown(args: argparse.Namespace) -> int:
+    payload = load_clusters(args.path)
+    Path(args.output).write_text(markdown_trend_report(payload), encoding="utf-8")
+    print(f"Wrote trend markdown to {args.output}")
+    return 0
+
+
 def build_parser() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(prog="failmap")
     subparsers = parser.add_subparsers(dest="command", required=True)
@@ -135,6 +158,20 @@ def build_parser() -> argparse.ArgumentParser:
     issue_bundle_summary = subparsers.add_parser("issue-bundle-summary", help="summarize an issue bundle json file")
     issue_bundle_summary.add_argument("path")
     issue_bundle_summary.set_defaults(func=_cmd_issue_bundle_summary)
+
+    trend = subparsers.add_parser("trend", help="build a trend report from multiple cluster snapshots")
+    trend.add_argument("output")
+    trend.add_argument("paths", nargs="+")
+    trend.set_defaults(func=_cmd_trend)
+
+    trend_summary = subparsers.add_parser("trend-summary", help="summarize a trend json file")
+    trend_summary.add_argument("path")
+    trend_summary.set_defaults(func=_cmd_trend_summary)
+
+    trend_markdown = subparsers.add_parser("trend-markdown", help="render markdown from a trend json file")
+    trend_markdown.add_argument("path")
+    trend_markdown.add_argument("output")
+    trend_markdown.set_defaults(func=_cmd_trend_markdown)
 
     return parser
 

@@ -74,3 +74,6 @@ jobs:
           failmap issue-drafts examples/compare.json examples/issues
           failmap issue-bundle examples/issues examples/bundle
           failmap issue-bundle-summary examples/bundle/bundle.json
+          failmap trend examples/trends.json examples/baseline_clusters.json examples/candidate_clusters.json examples/release3_clusters.json
+          failmap trend-summary examples/trends.json
+          failmap trend-markdown examples/trends.json examples/trends.md

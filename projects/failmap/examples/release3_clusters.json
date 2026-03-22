@@ -1,0 +1,113 @@
+{
+  "case_count": 4,
+  "cluster_count": 3,
+  "clusters": [
+    {
+      "agents": [
+        {
+          "count": 1,
+          "name": "runtime-agent"
+        },
+        {
+          "count": 1,
+          "name": "search-agent"
+        }
+      ],
+      "case_count": 2,
+      "example_episode_ids": [
+        "planner-loop-a",
+        "planner-loop-b"
+      ],
+      "example_files": [
+        "cases/005-planner-loop-a.json",
+        "cases/006-planner-loop-b.json"
+      ],
+      "failures": 2,
+      "models": [
+        {
+          "count": 2,
+          "name": "gpt-4.1"
+        }
+      ],
+      "signature": "failure:model_call:planner",
+      "successes": 0,
+      "tags": [
+        {
+          "count": 2,
+          "name": "model_call"
+        }
+      ]
+    },
+    {
+      "agents": [
+        {
+          "count": 1,
+          "name": "research-agent"
+        },
+        {
+          "count": 1,
+          "name": "search-agent"
+        }
+      ],
+      "case_count": 1,
+      "example_episode_ids": [
+        "assertion-failed-a"
+      ],
+      "example_files": [
+        "cases/003-assertion-failed-a.json"
+      ],
+      "failures": 1,
+      "models": [
+        {
+          "count": 1,
+          "name": "gpt-4.1"
+        }
+      ],
+      "signature": "failure:note:assertion",
+      "successes": 0,
+      "tags": [
+        {
+          "count": 1,
+          "name": "note"
+        },
+        {
+          "count": 1,
+          "name": "tool_call"
+        }
+      ]
+    },
+    {
+      "agents": [
+        {
+          "count": 1,
+          "name": "billing-agent"
+        }
+      ],
+      "case_count": 1,
+      "example_episode_ids": [
+        "billing-timeout-c"
+      ],
+      "example_files": [
+        "cases/007-billing-timeout-c.json"
+      ],
+      "failures": 1,
+      "models": [
+        {
+          "count": 1,
+          "name": "gpt-4.1-mini"
+        }
+      ],
+      "signature": "failure:tool_call:web_search",
+      "successes": 0,
+      "tags": [
+        {
+          "count": 1,
+          "name": "tool_call"
+        }
+      ]
+    }
+  ],
+  "format": "failmap-v1",
+  "source_format": "tracepack-v1",
+  "source_pack": "examples/sample_pack"
+}

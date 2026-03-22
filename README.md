@@ -36,7 +36,7 @@ Build reusable benchmark packs from real agent traces, with lightweight redactio
 
 Path: `projects/failmap`
 
-Cluster recurring agent failures from TracePack packs, compare failure clusters between releases, generate issue-ready triage drafts, and bundle them for planning.
+Cluster recurring agent failures from TracePack packs, compare releases, generate issue-ready triage drafts, bundle them for planning, and track failure trends across snapshots.
 
 ## Toolchain story
 
@@ -94,6 +94,7 @@ pip install -e .
 failmap compare examples/baseline_clusters.json examples/candidate_clusters.json examples/compare.json
 failmap issue-drafts examples/compare.json examples/issues
 failmap issue-bundle examples/issues examples/bundle
+failmap trend examples/trends.json examples/baseline_clusters.json examples/candidate_clusters.json examples/release3_clusters.json
 ```
 
 ## Why these projects have star potential
@@ -111,7 +112,7 @@ The projects in this repo are designed around that rule.
 
 - add more AgentCI integrations and richer HTML diff reports
 - strengthen TracePack redaction policies, labeling workflows, and dataset export formats
-- add FailMap issue templates, trend views, and release-to-release cluster drilldowns
+- add richer FailMap issue templates, trend views, and release-to-release cluster drilldowns
 - add more focused projects around agent eval infra, failure mining, and trajectory analytics
 
 ## License

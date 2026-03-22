@@ -12,9 +12,12 @@ from failmap.io import write_json
 from failmap.report import (
     markdown_compare_report,
     markdown_report,
+    markdown_trend_report,
     summarize_clusters,
     summarize_compare,
+    summarize_trends,
 )
+from failmap.trends import build_trend_report
 
 
 class FailMapTests(unittest.TestCase):
@@ -214,6 +217,62 @@ class FailMapTests(unittest.TestCase):
             summary = (bundle_dir / "SUMMARY.md").read_text(encoding="utf-8")
             self.assertIn("# FailMap Issue Bundle", summary)
             self.assertIn("tooling", summary)
+
+    def test_trend_report_tracks_latest_statuses(self):
+        with tempfile.TemporaryDirectory() as tmpdir:
+            root = Path(tmpdir)
+            release_a = root / "release-a.json"
+            release_b = root / "release-b.json"
+            release_c = root / "release-c.json"
+
+            write_json(
+                release_a,
+                {
+                    "format": "failmap-v1",
+                    "case_count": 3,
+                    "cluster_count": 2,
+                    "clusters": [
+                        {"signature": "failure:tool_call:web_search", "case_count": 2},
+                        {"signature": "failure:note:assertion", "case_count": 1},
+                    ],
+                },
+            )
+            write_json(
+                release_b,
+                {
+                    "format": "failmap-v1",
+                    "case_count": 4,
+                    "cluster_count": 2,
+                    "clusters": [
+                        {"signature": "failure:tool_call:web_search", "case_count": 3},
+                        {"signature": "failure:note:assertion", "case_count": 1},
+                    ],
+                },
+            )
+            write_json(
+                release_c,
+                {
+                    "format": "failmap-v1",
+                    "case_count": 4,
+                    "cluster_count": 3,
+                    "clusters": [
+                        {"signature": "failure:tool_call:web_search", "case_count": 1},
+                        {"signature": "failure:model_call:planner", "case_count": 2},
+                        {"signature": "failure:note:assertion", "case_count": 1},
+                    ],
+                },
+            )
+
+            payload = build_trend_report([release_a, release_b, release_c])
+            self.assertEqual(payload["snapshot_count"], 3)
+            self.assertEqual(payload["summary"]["new_in_latest"], 1)
+            self.assertEqual(payload["summary"]["shrinking_in_latest"], 1)
+            self.assertEqual(payload["summary"]["stable_in_latest"], 1)
+            summary = summarize_trends(payload)
+            markdown = markdown_trend_report(payload)
+            self.assertIn("Snapshots: 3", summary)
+            self.assertIn("# FailMap Trend Report", markdown)
+            self.assertIn("failure:model_call:planner", markdown)
 
 
 if __name__ == "__main__":
