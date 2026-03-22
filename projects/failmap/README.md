@@ -19,6 +19,7 @@ FailMap focuses on that missing step.
 - compares two cluster snapshots to show which failure modes are new, resolved, growing, or shrinking
 - generates issue-ready Markdown drafts for the clusters that need triage
 - adds triage metadata such as `priority`, `labels`, and `suggested_owner`
+- builds batch issue bundles grouped by priority and owner for planning meetings or bulk import workflows
 - keeps the workflow simple enough for CI and team triage
 
 ## Quick start
@@ -34,13 +35,20 @@ failmap compare examples/baseline_clusters.json examples/candidate_clusters.json
 failmap compare-summary examples/compare.json
 failmap compare-markdown examples/compare.json examples/compare.md
 failmap issue-drafts examples/compare.json examples/issues
+failmap issue-bundle examples/issues examples/bundle
+failmap issue-bundle-summary examples/bundle/bundle.json
 ```
 
 ## Example output
 
 ```text
-$ failmap issue-drafts examples/compare.json examples/issues
-Wrote 2 issue drafts to examples/issues
+$ failmap issue-bundle-summary examples/bundle/bundle.json
+Drafts: 2
+By priority:
+- P1: 2
+By owner:
+- tooling: 1
+- evals: 1
 ```
 
 Example metadata emitted into each issue draft:
@@ -64,6 +72,8 @@ failmap compare baseline_clusters.json candidate_clusters.json path/to/compare.j
 failmap compare-summary path/to/compare.json
 failmap compare-markdown path/to/compare.json path/to/report.md
 failmap issue-drafts path/to/compare.json path/to/issues_dir --status new --status growing
+failmap issue-bundle path/to/issues_dir path/to/bundle_dir
+failmap issue-bundle-summary path/to/bundle.json
 ```
 
 ## Cluster fields
@@ -98,6 +108,14 @@ Each generated issue draft includes:
 - representative baseline and candidate examples
 - triage metadata: `priority`, `suggested_owner`, `labels`
 - suggested next steps for triage and regression coverage
+
+## Issue bundle output
+
+Each generated issue bundle includes:
+
+- `bundle.json` with grouped drafts by priority, owner, and status
+- `SUMMARY.md` for planning reviews and standups
+- compact counts for prioritization and ownership assignment
 
 ## Roadmap
 

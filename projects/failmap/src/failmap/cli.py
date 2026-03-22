@@ -7,7 +7,7 @@ import sys
 from .cluster import build_clusters
 from .compare import compare_cluster_files
 from .io import write_json
-from .issues import generate_issue_drafts
+from .issues import build_issue_bundle, generate_issue_drafts, load_issue_manifest
 from .report import (
     load_clusters,
     markdown_compare_report,
@@ -64,6 +64,25 @@ def _cmd_issue_drafts(args: argparse.Namespace) -> int:
     return 0
 
 
+def _cmd_issue_bundle(args: argparse.Namespace) -> int:
+    bundle = build_issue_bundle(args.issues_path, args.output_dir)
+    print(f"Wrote issue bundle with {bundle['draft_count']} drafts to {args.output_dir}")
+    return 0
+
+
+def _cmd_issue_bundle_summary(args: argparse.Namespace) -> int:
+    bundle = load_issue_manifest(args.path)
+    draft_count = int(bundle.get("draft_count", 0))
+    print(f"Drafts: {draft_count}")
+    print("By priority:")
+    for key, value in sorted(bundle.get("priority_counts", {}).items()):
+        print(f"- {key}: {value}")
+    print("By owner:")
+    for key, value in sorted(bundle.get("owner_counts", {}).items()):
+        print(f"- {key}: {value}")
+    return 0
+
+
 def build_parser() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(prog="failmap")
     subparsers = parser.add_subparsers(dest="command", required=True)
@@ -107,6 +126,15 @@ def build_parser() -> argparse.ArgumentParser:
         help="limit generated drafts to selected statuses; can be passed multiple times",
     )
     issue_drafts.set_defaults(func=_cmd_issue_drafts)
+
+    issue_bundle = subparsers.add_parser("issue-bundle", help="group issue drafts into a batch triage bundle")
+    issue_bundle.add_argument("issues_path")
+    issue_bundle.add_argument("output_dir")
+    issue_bundle.set_defaults(func=_cmd_issue_bundle)
+
+    issue_bundle_summary = subparsers.add_parser("issue-bundle-summary", help="summarize an issue bundle json file")
+    issue_bundle_summary.add_argument("path")
+    issue_bundle_summary.set_defaults(func=_cmd_issue_bundle_summary)
 
     return parser
 

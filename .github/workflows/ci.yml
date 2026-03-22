@@ -71,3 +71,5 @@ jobs:
           failmap compare-summary examples/compare.json
           failmap compare-markdown examples/compare.json examples/compare.md
           failmap issue-drafts examples/compare.json examples/issues
+          failmap issue-bundle examples/issues examples/bundle
+          failmap issue-bundle-summary examples/bundle/bundle.json

@@ -1,0 +1,143 @@
+{
+  "by_owner": {
+    "tooling": [
+      {
+        "file": "002-growing-failure-tool-call-web-search.md",
+        "labels": [
+          "failmap",
+          "status:growing",
+          "priority:P1",
+          "signature:failure-tool-call-web-search"
+        ],
+        "priority": "P1",
+        "signature": "failure:tool_call:web_search",
+        "status": "growing",
+        "suggested_owner": "tooling",
+        "title": "[FailMap] growing: failure:tool_call:web_search"
+      },
+      {
+        "file": "001-new-failure-tool-call-db-lookup.md",
+        "labels": [
+          "failmap",
+          "status:new",
+          "priority:P1",
+          "signature:failure-tool-call-db-lookup"
+        ],
+        "priority": "P1",
+        "signature": "failure:tool_call:db_lookup",
+        "status": "new",
+        "suggested_owner": "tooling",
+        "title": "[FailMap] new: failure:tool_call:db_lookup"
+      }
+    ]
+  },
+  "by_priority": {
+    "P1": [
+      {
+        "file": "002-growing-failure-tool-call-web-search.md",
+        "labels": [
+          "failmap",
+          "status:growing",
+          "priority:P1",
+          "signature:failure-tool-call-web-search"
+        ],
+        "priority": "P1",
+        "signature": "failure:tool_call:web_search",
+        "status": "growing",
+        "suggested_owner": "tooling",
+        "title": "[FailMap] growing: failure:tool_call:web_search"
+      },
+      {
+        "file": "001-new-failure-tool-call-db-lookup.md",
+        "labels": [
+          "failmap",
+          "status:new",
+          "priority:P1",
+          "signature:failure-tool-call-db-lookup"
+        ],
+        "priority": "P1",
+        "signature": "failure:tool_call:db_lookup",
+        "status": "new",
+        "suggested_owner": "tooling",
+        "title": "[FailMap] new: failure:tool_call:db_lookup"
+      }
+    ]
+  },
+  "by_status": {
+    "growing": [
+      {
+        "file": "002-growing-failure-tool-call-web-search.md",
+        "labels": [
+          "failmap",
+          "status:growing",
+          "priority:P1",
+          "signature:failure-tool-call-web-search"
+        ],
+        "priority": "P1",
+        "signature": "failure:tool_call:web_search",
+        "status": "growing",
+        "suggested_owner": "tooling",
+        "title": "[FailMap] growing: failure:tool_call:web_search"
+      }
+    ],
+    "new": [
+      {
+        "file": "001-new-failure-tool-call-db-lookup.md",
+        "labels": [
+          "failmap",
+          "status:new",
+          "priority:P1",
+          "signature:failure-tool-call-db-lookup"
+        ],
+        "priority": "P1",
+        "signature": "failure:tool_call:db_lookup",
+        "status": "new",
+        "suggested_owner": "tooling",
+        "title": "[FailMap] new: failure:tool_call:db_lookup"
+      }
+    ]
+  },
+  "draft_count": 2,
+  "drafts": [
+    {
+      "file": "001-new-failure-tool-call-db-lookup.md",
+      "labels": [
+        "failmap",
+        "status:new",
+        "priority:P1",
+        "signature:failure-tool-call-db-lookup"
+      ],
+      "priority": "P1",
+      "signature": "failure:tool_call:db_lookup",
+      "status": "new",
+      "suggested_owner": "tooling",
+      "title": "[FailMap] new: failure:tool_call:db_lookup"
+    },
+    {
+      "file": "002-growing-failure-tool-call-web-search.md",
+      "labels": [
+        "failmap",
+        "status:growing",
+        "priority:P1",
+        "signature:failure-tool-call-web-search"
+      ],
+      "priority": "P1",
+      "signature": "failure:tool_call:web_search",
+      "status": "growing",
+      "suggested_owner": "tooling",
+      "title": "[FailMap] growing: failure:tool_call:web_search"
+    }
+  ],
+  "format": "failmap-issue-bundle-v1",
+  "owner_counts": {
+    "tooling": 2
+  },
+  "priority_counts": {
+    "P1": 2
+  },
+  "source_manifest": "examples/issues",
+  "status_counts": {
+    "growing": 1,
+    "new": 1
+  }
+}

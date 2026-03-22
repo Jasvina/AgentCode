@@ -7,7 +7,7 @@ from pathlib import Path
 
 from failmap.cluster import build_clusters
 from failmap.compare import compare_cluster_files
-from failmap.issues import generate_issue_drafts
+from failmap.issues import build_issue_bundle, generate_issue_drafts
 from failmap.io import write_json
 from failmap.report import (
     markdown_compare_report,
@@ -174,6 +174,46 @@ class FailMapTests(unittest.TestCase):
             first_issue = (output_dir / issue_files[0]).read_text(encoding="utf-8")
             self.assertIn("priority:", first_issue)
             self.assertIn("suggested_owner:", first_issue)
+
+    def test_issue_bundle_groups_by_priority_and_owner(self):
+        with tempfile.TemporaryDirectory() as tmpdir:
+            root = Path(tmpdir)
+            issues_dir = root / "issues"
+            issues_dir.mkdir(parents=True, exist_ok=True)
+            manifest = {
+                "format": "failmap-issues-v1",
+                "source_compare": "compare.json",
+                "draft_count": 2,
+                "drafts": [
+                    {
+                        "file": "001-new-tool.md",
+                        "title": "[FailMap] new: failure:tool_call:db_lookup",
+                        "status": "new",
+                        "signature": "failure:tool_call:db_lookup",
+                        "priority": "P1",
+                        "suggested_owner": "tooling",
+                        "labels": ["failmap", "status:new", "priority:P1"],
+                    },
+                    {
+                        "file": "002-growing-assertion.md",
+                        "title": "[FailMap] growing: failure:note:assertion",
+                        "status": "growing",
+                        "signature": "failure:note:assertion",
+                        "priority": "P1",
+                        "suggested_owner": "evals",
+                        "labels": ["failmap", "status:growing", "priority:P1"],
+                    },
+                ],
+            }
+            write_json(issues_dir / "manifest.json", manifest)
+            bundle_dir = root / "bundle"
+            bundle = build_issue_bundle(issues_dir, bundle_dir)
+            self.assertEqual(bundle["draft_count"], 2)
+            self.assertEqual(bundle["priority_counts"]["P1"], 2)
+            self.assertEqual(bundle["owner_counts"]["tooling"], 1)
+            summary = (bundle_dir / "SUMMARY.md").read_text(encoding="utf-8")
+            self.assertIn("# FailMap Issue Bundle", summary)
+            self.assertIn("tooling", summary)
 
 
 if __name__ == "__main__":

@@ -142,3 +142,73 @@ def generate_issue_drafts(
         encoding="utf-8",
     )
     return manifest
+
+
+def load_issue_manifest(path: str | Path) -> dict[str, Any]:
+    source = Path(path)
+    manifest_path = source / "manifest.json" if source.is_dir() else source
+    return load_json(manifest_path)
+
+
+def _group_drafts(drafts: list[dict[str, Any]], key: str) -> dict[str, list[dict[str, Any]]]:
+    grouped: dict[str, list[dict[str, Any]]] = {}
+    for draft in drafts:
+        value = str(draft.get(key) or "unknown")
+        grouped.setdefault(value, []).append(draft)
+    for value in grouped:
+        grouped[value] = sorted(grouped[value], key=lambda item: (item["title"], item["file"]))
+    return dict(sorted(grouped.items(), key=lambda item: item[0]))
+
+
+def _bundle_markdown(bundle: dict[str, Any]) -> str:
+    lines = [
+        "# FailMap Issue Bundle",
+        "",
+        f"- Drafts: {bundle['draft_count']}",
+        f"- Priorities: {', '.join(bundle['priority_counts'].keys()) or 'none'}",
+        f"- Owners: {', '.join(bundle['owner_counts'].keys()) or 'none'}",
+        "",
+        "## By priority",
+        "",
+    ]
+    for priority, count in bundle["priority_counts"].items():
+        lines.append(f"- {priority}: {count}")
+    lines.extend(["", "## By owner", ""])
+    for owner, count in bundle["owner_counts"].items():
+        lines.append(f"- {owner}: {count}")
+    lines.extend(["", "## Drafts", ""])
+    for draft in bundle["drafts"]:
+        lines.append(
+            f"- [{draft['title']}]({draft['file']}) — priority `{draft['priority']}`, owner `{draft['suggested_owner']}`"
+        )
+    return "\n".join(lines).rstrip() + "\n"
+
+
+def build_issue_bundle(issues_path: str | Path, output_dir: str | Path) -> dict[str, Any]:
+    manifest = load_issue_manifest(issues_path)
+    drafts = list(manifest.get("drafts", []))
+    by_priority = _group_drafts(drafts, "priority")
+    by_owner = _group_drafts(drafts, "suggested_owner")
+    by_status = _group_drafts(drafts, "status")
+
+    bundle = {
+        "format": "failmap-issue-bundle-v1",
+        "source_manifest": str(Path(issues_path)),
+        "draft_count": len(drafts),
+        "drafts": drafts,
+        "priority_counts": {key: len(value) for key, value in by_priority.items()},
+        "owner_counts": {key: len(value) for key, value in by_owner.items()},
+        "status_counts": {key: len(value) for key, value in by_status.items()},
+        "by_priority": by_priority,
+        "by_owner": by_owner,
+        "by_status": by_status,
+    }
+
+    out_root = Path(output_dir)
+    out_root.mkdir(parents=True, exist_ok=True)
+    (out_root / "bundle.json").write_text(
+        __import__("json").dumps(bundle, indent=2, sort_keys=True) + "\n",
+        encoding="utf-8",
+    )
+    (out_root / "SUMMARY.md").write_text(_bundle_markdown(bundle), encoding="utf-8")
+    return bundle
