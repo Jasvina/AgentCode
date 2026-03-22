@@ -8,6 +8,7 @@ from agentci.schema import Episode
 def main() -> None:
     baseline_path = Path(__file__).with_name("math_episode.json")
     candidate_path = Path(__file__).with_name("math_episode_candidate.json")
+    latency_candidate_path = Path(__file__).with_name("math_episode_latency_candidate.json")
 
     episode = Episode.load(baseline_path)
     episode.prompt_version = "v2"
@@ -18,6 +19,11 @@ def main() -> None:
 
     episode.save(candidate_path)
     print(f"Wrote {candidate_path}")
+
+    latency_candidate = Episode.load(baseline_path)
+    latency_candidate.metrics["latency_ms"] = 52
+    latency_candidate.save(latency_candidate_path)
+    print(f"Wrote {latency_candidate_path}")
 
 
 if __name__ == "__main__":

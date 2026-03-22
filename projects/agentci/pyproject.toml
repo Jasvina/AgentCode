@@ -23,6 +23,9 @@ classifiers = [
 ]
 dependencies = []
 
+[project.optional-dependencies]
+pytest = ["pytest>=8"]
+
 [project.urls]
 Homepage = "https://github.com/Jasvina/agentci"
 Repository = "https://github.com/Jasvina/agentci"
@@ -30,6 +33,9 @@ Issues = "https://github.com/Jasvina/agentci/issues"
 
 [project.scripts]
 agentci = "agentci.cli:main"
+
+[project.entry-points.pytest11]
+agentci = "agentci.pytest_plugin"
 
 [tool.setuptools]
 package-dir = {"" = "src"}

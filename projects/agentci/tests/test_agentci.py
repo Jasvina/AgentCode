@@ -7,6 +7,12 @@ from pathlib import Path
 from agentci.adapters import LangGraphEventAdapter, OpenAIAgentsEventAdapter
 from agentci.compare import compare_episodes
 from agentci.html_report import render_diff_html_report
+from agentci.pytest_plugin import EpisodeRegressionFixture
+from agentci.regression import (
+    RegressionAssertionError,
+    assert_episode_regression_from_paths,
+    run_regression_check,
+)
 from agentci.replay import replay_episode
 from agentci.schema import Episode
 from agentci.trace import EpisodeRecorder
@@ -53,6 +59,42 @@ class AgentCITests(unittest.TestCase):
         self.assertIn("AgentCI HTML diff report", html)
         self.assertIn("prompt_version", html)
         self.assertIn("different", html)
+
+    def test_regression_check_can_ignore_metric_prefixes(self):
+        baseline = self._build_episode()
+        candidate = self._build_episode()
+        candidate.metrics["latency_ms"] = 99
+        result = run_regression_check(
+            baseline,
+            candidate,
+            ignore_diff_prefixes=("metric:latency_ms",),
+        )
+        self.assertTrue(result.passed)
+
+    def test_regression_assertion_from_paths_raises_clear_message(self):
+        baseline = self._build_episode()
+        candidate = self._build_episode()
+        candidate.final_output = "wrong"
+        with tempfile.TemporaryDirectory() as tmpdir:
+            root = Path(tmpdir)
+            baseline_path = root / "baseline.json"
+            candidate_path = root / "candidate.json"
+            baseline.save(baseline_path)
+            candidate.save(candidate_path)
+            with self.assertRaises(RegressionAssertionError) as ctx:
+                assert_episode_regression_from_paths(baseline_path, candidate_path)
+        message = str(ctx.exception)
+        self.assertIn("AgentCI regression check failed", message)
+        self.assertIn("candidate.json", message)
+        self.assertIn("final_output", message)
+
+    def test_pytest_fixture_helper_uses_default_ignore_prefixes(self):
+        baseline = self._build_episode()
+        candidate = self._build_episode()
+        candidate.metrics["latency_ms"] = 50
+        helper = EpisodeRegressionFixture(default_ignore_diff_prefixes=("metric:latency_ms",))
+        result = helper.check(baseline, candidate)
+        self.assertTrue(result.passed)
 
     def test_load_rejects_invalid_episode(self):
         with tempfile.TemporaryDirectory() as tmpdir:

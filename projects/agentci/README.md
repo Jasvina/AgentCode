@@ -29,6 +29,7 @@ Tracing platforms help you inspect runs after the fact. AgentCI helps you turn t
 - Replay checks against frozen tool outputs
 - Step-aware diff output for baseline vs candidate runs
 - HTML diff reports for CI artifacts and human review
+- pytest regression helpers for episode-vs-episode checks
 - Experimental adapters for LangGraph-style events and OpenAI Agents-style items
 - Better end-to-end integration demos and GitHub Actions CI
 
@@ -92,6 +93,32 @@ $ agentci diff-html examples/math_episode.json examples/math_episode_candidate.j
 Wrote HTML diff report to examples/math_diff.html
 ```
 
+## Pytest regression usage
+
+If you install with the pytest extra, AgentCI registers a small plugin:
+
+```bash
+pip install -e .[pytest]
+pytest -q --agentci-ignore-diff metric:latency_ms
+```
+
+Example test:
+
+```python
+from pathlib import Path
+
+
+def test_math_agent_regression(episode_regression):
+    root = Path("examples")
+    episode_regression.assert_match_files(
+        root / "math_episode.json",
+        root / "math_episode_latency_candidate.json",
+        ignore_diff_prefixes=("metric:latency_ms",),
+    )
+```
+
+This lets teams keep episode regression tests inside ordinary pytest suites instead of building a separate harness.
+
 ## Integration demos
 
 ### LangGraph-style events
@@ -145,6 +172,7 @@ adapter.record_item({
 ```
 
 See `docs/adapters.md` for the minimal event shapes each adapter accepts.
+See `docs/pytest.md` for a fuller pytest workflow.
 
 ## Repository layout
 
@@ -175,7 +203,7 @@ tests/                 unit tests
 
 ### Next
 
-- pytest plugin for agent regression suites
+- richer pytest parametrization and markers for agent regression suites
 - richer HTML trace diff report
 - flaky-run detection and failure clustering
 - benchmark packs for browser, coding, and research agents
