@@ -26,6 +26,7 @@ jobs:
           python examples/langgraph_integration.py
           python examples/openai_agents_integration.py
           agentci summarize examples/openai_agents_episode.json
+          agentci diff-html examples/math_episode.json examples/math_episode_candidate.json examples/math_diff.html
 
   tracepack:
     runs-on: ubuntu-latest

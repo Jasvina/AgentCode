@@ -6,6 +6,7 @@ from pathlib import Path
 
 from agentci.adapters import LangGraphEventAdapter, OpenAIAgentsEventAdapter
 from agentci.compare import compare_episodes
+from agentci.html_report import render_diff_html_report
 from agentci.replay import replay_episode
 from agentci.schema import Episode
 from agentci.trace import EpisodeRecorder
@@ -42,6 +43,16 @@ class AgentCITests(unittest.TestCase):
         diff = compare_episodes(baseline, candidate)
         self.assertTrue(diff.changed)
         self.assertGreaterEqual(len(diff.items), 2)
+
+    def test_html_report_renders_changed_fields(self):
+        baseline = self._build_episode()
+        candidate = self._build_episode()
+        candidate.prompt_version = "v2"
+        candidate.final_output = "different"
+        html = render_diff_html_report(baseline, candidate)
+        self.assertIn("AgentCI HTML diff report", html)
+        self.assertIn("prompt_version", html)
+        self.assertIn("different", html)
 
     def test_load_rejects_invalid_episode(self):
         with tempfile.TemporaryDirectory() as tmpdir:

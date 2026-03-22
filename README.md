@@ -24,7 +24,7 @@ After surveying today's high-star Agent repositories, three opportunities stood 
 
 Path: `projects/agentci`
 
-Replay-first regression testing for tool-using LLM agents.
+Replay-first regression testing for tool-using LLM agents, with portable episode traces and HTML diff reports for human review.
 
 ### 2. TracePack
 
@@ -68,6 +68,7 @@ source .venv/bin/activate
 pip install -e .
 python examples/math_agent.py
 agentci diff examples/math_episode.json examples/math_episode_candidate.json
+agentci diff-html examples/math_episode.json examples/math_episode_candidate.json examples/math_diff.html
 ```
 
 ### TracePack

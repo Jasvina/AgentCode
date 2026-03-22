@@ -28,6 +28,7 @@ Tracing platforms help you inspect runs after the fact. AgentCI helps you turn t
 - Portable episode schema for agent runs
 - Replay checks against frozen tool outputs
 - Step-aware diff output for baseline vs candidate runs
+- HTML diff reports for CI artifacts and human review
 - Experimental adapters for LangGraph-style events and OpenAI Agents-style items
 - Better end-to-end integration demos and GitHub Actions CI
 
@@ -63,6 +64,7 @@ python examples/make_candidate_episode.py
 agentci summarize examples/math_episode.json
 agentci replay examples/math_episode.json --fail-on-mismatch
 agentci diff examples/math_episode.json examples/math_episode_candidate.json
+agentci diff-html examples/math_episode.json examples/math_episode_candidate.json examples/math_diff.html
 ```
 
 ## Example output
@@ -85,6 +87,9 @@ Differences
 - step 4 payload.response: '20' -> '19'
 - step 5 payload.actual: '20' -> '19'
 - metric:latency_ms: 31 -> 34
+
+$ agentci diff-html examples/math_episode.json examples/math_episode_candidate.json examples/math_diff.html
+Wrote HTML diff report to examples/math_diff.html
 ```
 
 ## Integration demos
@@ -171,7 +176,7 @@ tests/                 unit tests
 ### Next
 
 - pytest plugin for agent regression suites
-- HTML trace diff report
+- richer HTML trace diff report
 - flaky-run detection and failure clustering
 - benchmark packs for browser, coding, and research agents
 - richer adapters for LangGraph, OpenAI Agents SDK, AutoGen, CrewAI

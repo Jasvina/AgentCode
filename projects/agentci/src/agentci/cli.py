@@ -4,6 +4,7 @@ import argparse
 import sys
 
 from .compare import compare_episodes
+from .html_report import write_diff_html_report
 from .replay import replay_episode
 from .schema import Episode
 
@@ -54,6 +55,14 @@ def _cmd_diff(args: argparse.Namespace) -> int:
     return 0
 
 
+def _cmd_diff_html(args: argparse.Namespace) -> int:
+    baseline = Episode.load(args.baseline)
+    candidate = Episode.load(args.candidate)
+    write_diff_html_report(baseline, candidate, args.output)
+    print(f"Wrote HTML diff report to {args.output}")
+    return 0
+
+
 def build_parser() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(prog="agentci")
     subparsers = parser.add_subparsers(dest="command", required=True)
@@ -75,6 +84,12 @@ def build_parser() -> argparse.ArgumentParser:
     diff.add_argument("baseline")
     diff.add_argument("candidate")
     diff.set_defaults(func=_cmd_diff)
+
+    diff_html = subparsers.add_parser("diff-html", help="render an HTML diff report for two episodes")
+    diff_html.add_argument("baseline")
+    diff_html.add_argument("candidate")
+    diff_html.add_argument("output")
+    diff_html.set_defaults(func=_cmd_diff_html)
 
     return parser
 

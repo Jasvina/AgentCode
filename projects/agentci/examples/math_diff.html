@@ -1,0 +1,273 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>AgentCI Diff Report · math-agent-demo</title>
+  <style>
+    :root {
+      color-scheme: light dark;
+      --bg: #0b1020;
+      --panel: #131a2a;
+      --muted: #8ea0bf;
+      --text: #eef4ff;
+      --accent: #5cc8ff;
+      --warn: #ffb020;
+      --border: #263147;
+      --same: #1f9d55;
+      --changed: #d97706;
+      --code: #0f172a;
+    }
+    body {
+      margin: 0;
+      font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
+      background: linear-gradient(180deg, #0b1020 0%, #111827 100%);
+      color: var(--text);
+    }
+    main {
+      max-width: 1120px;
+      margin: 0 auto;
+      padding: 32px 20px 64px;
+    }
+    .hero {
+      margin-bottom: 24px;
+      padding: 24px;
+      border: 1px solid var(--border);
+      border-radius: 18px;
+      background: rgba(19, 26, 42, 0.92);
+      box-shadow: 0 18px 60px rgba(0, 0, 0, 0.22);
+    }
+    .hero h1, h2, h3 { margin-top: 0; }
+    .muted { color: var(--muted); }
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 16px;
+      margin: 20px 0 28px;
+    }
+    .card {
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 16px;
+      background: rgba(19, 26, 42, 0.92);
+    }
+    .label {
+      color: var(--muted);
+      font-size: 12px;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+    }
+    .value {
+      font-size: 24px;
+      font-weight: 700;
+      margin-top: 8px;
+    }
+    code, pre {
+      font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+    }
+    pre {
+      overflow-x: auto;
+      padding: 12px;
+      border-radius: 12px;
+      background: var(--code);
+      border: 1px solid var(--border);
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      overflow: hidden;
+      border-radius: 16px;
+      border: 1px solid var(--border);
+      background: rgba(19, 26, 42, 0.92);
+    }
+    th, td {
+      padding: 14px;
+      border-bottom: 1px solid var(--border);
+      vertical-align: top;
+      text-align: left;
+    }
+    th {
+      color: var(--muted);
+      font-size: 12px;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+    }
+    .badge {
+      display: inline-block;
+      padding: 4px 10px;
+      border-radius: 999px;
+      font-size: 12px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+    }
+    .badge.same {
+      background: rgba(31, 157, 85, 0.18);
+      color: #8cf0b3;
+    }
+    .badge.changed {
+      background: rgba(217, 119, 6, 0.18);
+      color: #ffd08a;
+    }
+    details summary {
+      cursor: pointer;
+      color: var(--accent);
+      margin-top: 8px;
+    }
+    ul {
+      padding-left: 20px;
+    }
+  </style>
+</head>
+<body>
+  <main>
+    <section class="hero">
+      <p class="muted">AgentCI HTML diff report</p>
+      <h1>math-agent-demo</h1>
+      <p>Compare a baseline agent run against a candidate run before shipping a prompt, model, or tool change.</p>
+      <div class="grid">
+        <div class="card">
+          <div class="label">Changed fields</div>
+          <div class="value">5</div>
+        </div>
+        <div class="card">
+          <div class="label">Baseline final output</div>
+          <div class="value"><code>20</code></div>
+        </div>
+        <div class="card">
+          <div class="label">Candidate final output</div>
+          <div class="value"><code>19</code></div>
+        </div>
+        <div class="card">
+          <div class="label">Prompt versions</div>
+          <div class="value"><code>v1 → v2</code></div>
+        </div>
+      </div>
+    </section>
+
+    <section class="hero">
+      <h2>Change summary</h2>
+      <ul>
+        <li><code>prompt_version: &#x27;v1&#x27; -&gt; &#x27;v2&#x27;</code></li>
+<li><code>final_output: &#x27;20&#x27; -&gt; &#x27;19&#x27;</code></li>
+<li><code>step 4 payload.response: &#x27;20&#x27; -&gt; &#x27;19&#x27;</code></li>
+<li><code>step 5 payload.actual: &#x27;20&#x27; -&gt; &#x27;19&#x27;</code></li>
+<li><code>metric:latency_ms: 31 -&gt; 34</code></li>
+      </ul>
+    </section>
+
+    <section class="hero">
+      <h2>Episode metadata</h2>
+      <div class="grid">
+        <div class="card">
+          <div class="label">Agent</div>
+          <div class="value">toy-math-agent</div>
+        </div>
+        <div class="card">
+          <div class="label">Model</div>
+          <div class="value">demo-model → demo-model</div>
+        </div>
+        <div class="card">
+          <div class="label">Steps</div>
+          <div class="value">5 → 5</div>
+        </div>
+        <div class="card">
+          <div class="label">Success</div>
+          <div class="value">True → True</div>
+        </div>
+      </div>
+      <div class="grid">
+        <div class="card">
+          <div class="label">Baseline metrics</div>
+          <pre>{
+  &quot;cost_usd&quot;: 0.0002,
+  &quot;latency_ms&quot;: 31
+}</pre>
+        </div>
+        <div class="card">
+          <div class="label">Candidate metrics</div>
+          <pre>{
+  &quot;cost_usd&quot;: 0.0002,
+  &quot;latency_ms&quot;: 34
+}</pre>
+        </div>
+      </div>
+    </section>
+
+    <section class="hero">
+      <h2>Step-by-step comparison</h2>
+      <table>
+        <thead>
+          <tr>
+            <th>#</th>
+            <th>Baseline</th>
+            <th>Candidate</th>
+            <th>Status</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr><td>1</td><td><div><strong>model_call</strong> · <code>model</code></div><details><summary>payload</summary><pre>{
+  &quot;metadata&quot;: {},
+  &quot;prompt&quot;: &quot;Compute (2 + 3) * 4 using tools when useful.&quot;,
+  &quot;response&quot;: &quot;I should call add, then multiply.&quot;
+}</pre></details></td><td><div><strong>model_call</strong> · <code>model</code></div><details><summary>payload</summary><pre>{
+  &quot;metadata&quot;: {},
+  &quot;prompt&quot;: &quot;Compute (2 + 3) * 4 using tools when useful.&quot;,
+  &quot;response&quot;: &quot;I should call add, then multiply.&quot;
+}</pre></details></td><td><span class='badge same'>same</span></td></tr>
+<tr><td>2</td><td><div><strong>tool_call</strong> · <code>add</code></div><details><summary>payload</summary><pre>{
+  &quot;arguments&quot;: {
+    &quot;a&quot;: 2,
+    &quot;b&quot;: 3
+  },
+  &quot;metadata&quot;: {},
+  &quot;output&quot;: 5,
+  &quot;status&quot;: &quot;ok&quot;
+}</pre></details></td><td><div><strong>tool_call</strong> · <code>add</code></div><details><summary>payload</summary><pre>{
+  &quot;arguments&quot;: {
+    &quot;a&quot;: 2,
+    &quot;b&quot;: 3
+  },
+  &quot;metadata&quot;: {},
+  &quot;output&quot;: 5,
+  &quot;status&quot;: &quot;ok&quot;
+}</pre></details></td><td><span class='badge same'>same</span></td></tr>
+<tr><td>3</td><td><div><strong>tool_call</strong> · <code>multiply</code></div><details><summary>payload</summary><pre>{
+  &quot;arguments&quot;: {
+    &quot;a&quot;: 5,
+    &quot;b&quot;: 4
+  },
+  &quot;metadata&quot;: {},
+  &quot;output&quot;: 20,
+  &quot;status&quot;: &quot;ok&quot;
+}</pre></details></td><td><div><strong>tool_call</strong> · <code>multiply</code></div><details><summary>payload</summary><pre>{
+  &quot;arguments&quot;: {
+    &quot;a&quot;: 5,
+    &quot;b&quot;: 4
+  },
+  &quot;metadata&quot;: {},
+  &quot;output&quot;: 20,
+  &quot;status&quot;: &quot;ok&quot;
+}</pre></details></td><td><span class='badge same'>same</span></td></tr>
+<tr><td>4</td><td><div><strong>model_call</strong> · <code>model</code></div><details><summary>payload</summary><pre>{
+  &quot;metadata&quot;: {},
+  &quot;prompt&quot;: &quot;Return the final answer.&quot;,
+  &quot;response&quot;: &quot;20&quot;
+}</pre></details></td><td><div><strong>model_call</strong> · <code>model</code></div><details><summary>payload</summary><pre>{
+  &quot;metadata&quot;: {},
+  &quot;prompt&quot;: &quot;Return the final answer.&quot;,
+  &quot;response&quot;: &quot;19&quot;
+}</pre></details></td><td><span class='badge changed'>changed</span></td></tr>
+<tr><td>5</td><td><div><strong>note</strong> · <code>assertion</code></div><details><summary>payload</summary><pre>{
+  &quot;actual&quot;: &quot;20&quot;,
+  &quot;expected&quot;: &quot;20&quot;
+}</pre></details></td><td><div><strong>note</strong> · <code>assertion</code></div><details><summary>payload</summary><pre>{
+  &quot;actual&quot;: &quot;19&quot;,
+  &quot;expected&quot;: &quot;20&quot;
+}</pre></details></td><td><span class='badge changed'>changed</span></td></tr>
+        </tbody>
+      </table>
+    </section>
+  </main>
+</body>
+</html>
