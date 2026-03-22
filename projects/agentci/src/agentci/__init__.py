@@ -1,5 +1,6 @@
 from .adapters import LangGraphEventAdapter, OpenAIAgentsEventAdapter
 from .compare import compare_episodes
+from .flaky import FlakyReport, analyze_flakiness
 from .html_report import render_diff_html_report, write_diff_html_report
 from .regression import (
     RegressionAssertionError,
@@ -16,10 +17,12 @@ __all__ = [
     "Episode",
     "EpisodeRecorder",
     "EpisodeStep",
+    "FlakyReport",
     "LangGraphEventAdapter",
     "OpenAIAgentsEventAdapter",
     "RegressionAssertionError",
     "RegressionResult",
+    "analyze_flakiness",
     "assert_episode_regression",
     "assert_episode_regression_from_paths",
     "compare_episodes",

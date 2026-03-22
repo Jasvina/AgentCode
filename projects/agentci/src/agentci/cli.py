@@ -4,6 +4,7 @@ import argparse
 import sys
 
 from .compare import compare_episodes
+from .flaky import analyze_flakiness
 from .html_report import write_diff_html_report
 from .regression import RegressionAssertionError, assert_episode_regression_from_paths
 from .replay import replay_episode
@@ -79,6 +80,20 @@ def _cmd_assert_regression(args: argparse.Namespace) -> int:
     return 0
 
 
+def _cmd_detect_flaky(args: argparse.Namespace) -> int:
+    episodes = [Episode.load(path) for path in args.paths]
+    report = analyze_flakiness(episodes)
+    print(f"Episodes analyzed: {report.episode_count}")
+    print(f"Unstable fields: {len(report.unstable_fields)}")
+    if report.is_stable:
+        print("No unstable fields detected")
+        return 0
+    for field in report.unstable_fields:
+        occurrences = ", ".join(f"{value} x{count}" for value, count in field.occurrences.items())
+        print(f"- {field.name}: {occurrences}")
+    return 0
+
+
 def build_parser() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(prog="agentci")
     subparsers = parser.add_subparsers(dest="command", required=True)
@@ -125,6 +140,13 @@ def build_parser() -> argparse.ArgumentParser:
         help="skip replay validation for the candidate episode",
     )
     assert_regression.set_defaults(func=_cmd_assert_regression)
+
+    detect_flaky = subparsers.add_parser(
+        "detect-flaky",
+        help="analyze multiple episodes and report unstable fields across runs",
+    )
+    detect_flaky.add_argument("paths", nargs="+")
+    detect_flaky.set_defaults(func=_cmd_detect_flaky)
 
     return parser
 

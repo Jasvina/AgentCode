@@ -67,6 +67,7 @@ agentci replay examples/math_episode.json --fail-on-mismatch
 agentci diff examples/math_episode.json examples/math_episode_candidate.json
 agentci diff-html examples/math_episode.json examples/math_episode_candidate.json examples/math_diff.html
 agentci assert-regression examples/math_episode.json examples/math_episode_latency_candidate.json --ignore-diff-prefix metric:latency_ms
+agentci detect-flaky examples/math_episode.json examples/math_episode_latency_candidate.json examples/math_episode_candidate.json
 ```
 
 ## Example output
@@ -95,6 +96,10 @@ Wrote HTML diff report to examples/math_diff.html
 
 $ agentci assert-regression examples/math_episode.json examples/math_episode_latency_candidate.json --ignore-diff-prefix metric:latency_ms
 AgentCI regression assertion passed
+
+$ agentci detect-flaky examples/math_episode.json examples/math_episode_latency_candidate.json examples/math_episode_candidate.json
+Episodes analyzed: 3
+Unstable fields: 5
 ```
 
 ## Pytest regression usage
@@ -135,6 +140,19 @@ agentci assert-regression \
 ```
 
 This exits non-zero when meaningful trajectory changes or replay mismatches appear.
+
+## Flaky-run analysis
+
+When you have multiple recordings of the same task and want to see what changed across runs:
+
+```bash
+agentci detect-flaky \
+  examples/math_episode.json \
+  examples/math_episode_latency_candidate.json \
+  examples/math_episode_candidate.json
+```
+
+This prints unstable fields such as changing metrics, final outputs, or step payload values.
 
 ## Integration demos
 

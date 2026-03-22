@@ -3,10 +3,13 @@ from __future__ import annotations
 import tempfile
 import unittest
 from pathlib import Path
+from io import StringIO
+from contextlib import redirect_stdout
 
 from agentci.adapters import LangGraphEventAdapter, OpenAIAgentsEventAdapter
 from agentci.cli import main as cli_main
 from agentci.compare import compare_episodes
+from agentci.flaky import analyze_flakiness
 from agentci.html_report import render_diff_html_report
 from agentci.pytest_plugin import EpisodeRegressionFixture
 from agentci.regression import (
@@ -130,6 +133,35 @@ class AgentCITests(unittest.TestCase):
             candidate.save(candidate_path)
             code = cli_main(["assert-regression", str(baseline_path), str(candidate_path)])
         self.assertEqual(code, 1)
+
+    def test_flaky_analysis_detects_unstable_fields(self):
+        left = self._build_episode()
+        middle = self._build_episode()
+        middle.metrics["latency_ms"] = 5
+        right = self._build_episode()
+        right.final_output = "other"
+        report = analyze_flakiness([left, middle, right])
+        names = [field.name for field in report.unstable_fields]
+        self.assertIn("metric:latency_ms", names)
+        self.assertIn("final_output", names)
+
+    def test_detect_flaky_cli_prints_unstable_fields(self):
+        baseline = self._build_episode()
+        candidate = self._build_episode()
+        candidate.metrics["latency_ms"] = 9
+        with tempfile.TemporaryDirectory() as tmpdir:
+            root = Path(tmpdir)
+            baseline_path = root / "baseline.json"
+            candidate_path = root / "candidate.json"
+            baseline.save(baseline_path)
+            candidate.save(candidate_path)
+            output = StringIO()
+            with redirect_stdout(output):
+                code = cli_main(["detect-flaky", str(baseline_path), str(candidate_path)])
+        text = output.getvalue()
+        self.assertEqual(code, 0)
+        self.assertIn("Unstable fields: 1", text)
+        self.assertIn("metric:latency_ms", text)
 
     def test_load_rejects_invalid_episode(self):
         with tempfile.TemporaryDirectory() as tmpdir:
