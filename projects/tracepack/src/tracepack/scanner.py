@@ -5,6 +5,7 @@ from pathlib import Path
 
 from .io import find_episode_files, load_episode
 from .model import Episode
+from .redact import contains_sensitive_text
 
 
 @dataclass
@@ -19,6 +20,8 @@ class CaseSummary:
     step_count: int
     signature: str
     tags: list[str] = field(default_factory=list)
+    labels: list[str] = field(default_factory=list)
+    contains_sensitive: bool = False
 
 
 @dataclass
@@ -58,10 +61,29 @@ def _tags(episode: Episode) -> list[str]:
     return sorted(set(tags))
 
 
+def _labels(episode: Episode, signature: str, tags: list[str], contains_sensitive: bool) -> list[str]:
+    labels = [f"status:{'success' if episode.success else 'failure'}", f"signature:{signature.replace(':', '-')}"]
+    labels.extend(f"step:{tag}" for tag in tags)
+    if contains_sensitive:
+        labels.append("pii:possible")
+    return sorted(set(labels))
+
+
+def _contains_sensitive(episode: Episode) -> bool:
+    fields = [episode.final_output, episode.episode_id, episode.agent_name, episode.model, episode.prompt_version]
+    for step in episode.steps:
+        for value in [step.name, str(step.payload)]:
+            fields.append(value)
+    return any(contains_sensitive_text(value) for value in fields)
+
+
 def scan_directory(root: str | Path) -> PackSummary:
     episodes: list[CaseSummary] = []
     for path in find_episode_files(root):
         episode = load_episode(path)
+        signature = _failure_signature(episode)
+        tags = _tags(episode)
+        contains_sensitive = _contains_sensitive(episode)
         episodes.append(
             CaseSummary(
                 source_path=str(path),
@@ -72,8 +94,10 @@ def scan_directory(root: str | Path) -> PackSummary:
                 success=episode.success,
                 final_output=episode.final_output,
                 step_count=len(episode.steps),
-                signature=_failure_signature(episode),
-                tags=_tags(episode),
+                signature=signature,
+                tags=tags,
+                labels=_labels(episode, signature, tags, contains_sensitive),
+                contains_sensitive=contains_sensitive,
             )
         )
     return PackSummary(episodes=episodes)

@@ -5,19 +5,23 @@ import json
 from pathlib import Path
 import sys
 
-from .builder import build_pack
+from .builder import build_pack, export_pack_jsonl
 from .scanner import scan_directory
 
 
 def _cmd_scan(args: argparse.Namespace) -> int:
     summary = scan_directory(args.path)
     kind_counts: dict[str, int] = {}
+    sensitive = 0
     for episode in summary.episodes:
         for tag in episode.tags:
             kind_counts[tag] = kind_counts.get(tag, 0) + 1
+        if episode.contains_sensitive:
+            sensitive += 1
     print(f"Episodes: {len(summary.episodes)}")
     print(f"Successes: {summary.successes}")
     print(f"Failures: {summary.failures}")
+    print(f"Sensitive: {sensitive}")
     if kind_counts:
         kinds = ", ".join(f"{key}={value}" for key, value in sorted(kind_counts.items()))
         print(f"Kinds: {kinds}")
@@ -25,7 +29,7 @@ def _cmd_scan(args: argparse.Namespace) -> int:
 
 
 def _cmd_build(args: argparse.Namespace) -> int:
-    summary = build_pack(args.source, args.output, only_failures=args.only_failures)
+    summary = build_pack(args.source, args.output, only_failures=args.only_failures, redact=args.redact)
     print(f"Built pack with {len(summary.episodes)} cases at {args.output}")
     return 0
 
@@ -35,13 +39,26 @@ def _cmd_inspect(args: argparse.Namespace) -> int:
     print(f"Format: {manifest['format']}")
     print(f"Cases: {manifest['case_count']}")
     print(f"Only failures: {manifest['only_failures']}")
+    print(f"Redacted: {manifest.get('redacted', False)}")
     signatures: dict[str, int] = {}
+    labels: dict[str, int] = {}
     for case in manifest.get("cases", []):
         signature = case.get("signature", "unknown")
         signatures[signature] = signatures.get(signature, 0) + 1
+        for label in case.get("labels", []):
+            labels[label] = labels.get(label, 0) + 1
     if signatures:
         summary = ", ".join(f"{key}={value}" for key, value in sorted(signatures.items()))
         print(f"Signatures: {summary}")
+    if labels:
+        top = ", ".join(f"{key}={value}" for key, value in sorted(labels.items())[:8])
+        print(f"Labels: {top}")
+    return 0
+
+
+def _cmd_export_jsonl(args: argparse.Namespace) -> int:
+    count = export_pack_jsonl(args.pack, args.output)
+    print(f"Exported {count} cases to {args.output}")
     return 0
 
 
@@ -57,11 +74,17 @@ def build_parser() -> argparse.ArgumentParser:
     build.add_argument("source")
     build.add_argument("output")
     build.add_argument("--only-failures", action="store_true")
+    build.add_argument("--redact", action="store_true", help="redact simple sensitive patterns in final outputs")
     build.set_defaults(func=_cmd_build)
 
     inspect_cmd = subparsers.add_parser("inspect", help="inspect an existing trace pack")
     inspect_cmd.add_argument("path")
     inspect_cmd.set_defaults(func=_cmd_inspect)
+
+    export_jsonl = subparsers.add_parser("export-jsonl", help="export a pack manifest to jsonl")
+    export_jsonl.add_argument("pack")
+    export_jsonl.add_argument("output")
+    export_jsonl.set_defaults(func=_cmd_export_jsonl)
 
     return parser
 

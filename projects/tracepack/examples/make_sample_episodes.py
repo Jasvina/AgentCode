@@ -16,7 +16,7 @@ def main() -> None:
         {
             "agent_name": "billing-agent",
             "episode_id": "billing-timeout",
-            "final_output": "I could not verify the invoice status.",
+            "final_output": "I could not verify invoice INV-7 for alice@example.com with sk_secret.",
             "metrics": {"latency_ms": 120},
             "model": "gpt-4.1-mini",
             "prompt_version": "billing-v3",

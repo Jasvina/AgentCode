@@ -3,11 +3,21 @@
   "cases": [
     {
       "agent_name": "billing-agent",
+      "contains_sensitive": true,
       "episode_id": "billing-timeout",
       "file": "cases/001-billing-timeout.json",
-      "final_output": "I could not verify the invoice status.",
+      "final_output": "I could not verify invoice [REDACTED_ID] for [REDACTED_EMAIL] with [REDACTED_TOKEN].",
+      "labels": [
+        "pii:possible",
+        "signature:failure-note-assertion",
+        "status:failure",
+        "step:model_call",
+        "step:note",
+        "step:tool_call"
+      ],
       "model": "gpt-4.1-mini",
       "prompt_version": "billing-v3",
+      "redaction_applied": true,
       "signature": "failure:note:assertion",
       "source_path": "examples/source_episodes/billing-timeout.json",
       "step_count": 3,
@@ -21,5 +31,6 @@
   ],
   "format": "tracepack-v1",
   "only_failures": true,
+  "redacted": true,
   "source_dir": "examples/source_episodes"
 }

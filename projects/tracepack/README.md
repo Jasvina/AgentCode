@@ -23,6 +23,9 @@ TracePack focuses on that layer.
 - builds summaries for each trace
 - computes a simple failure signature from the last failing step
 - exports a benchmark pack with a `manifest.json` and `cases/`
+- attaches case labels for downstream triage and analytics
+- detects simple sensitive patterns and can redact final outputs during pack build
+- exports packs to jsonl for dataset and eval workflows
 - supports `--only-failures` for failure-focused packs
 
 ## Quick start
@@ -33,8 +36,9 @@ source .venv/bin/activate
 pip install -e .
 python examples/make_sample_episodes.py
 tracepack scan examples/source_episodes
-tracepack build examples/source_episodes examples/demo_pack --only-failures
+tracepack build examples/source_episodes examples/demo_pack --only-failures --redact
 tracepack inspect examples/demo_pack
+tracepack export-jsonl examples/demo_pack examples/demo_pack.jsonl
 ```
 
 ## Example output
@@ -44,9 +48,10 @@ $ tracepack scan examples/source_episodes
 Episodes: 3
 Successes: 2
 Failures: 1
-Kinds: model_call=5, tool_call=3, note=2
+Sensitive: 1
+Kinds: model_call=3, note=1, tool_call=3
 
-$ tracepack build examples/source_episodes examples/demo_pack --only-failures
+$ tracepack build examples/source_episodes examples/demo_pack --only-failures --redact
 Built pack with 1 cases at examples/demo_pack
 ```
 
@@ -54,8 +59,9 @@ Built pack with 1 cases at examples/demo_pack
 
 ```bash
 tracepack scan path/to/episodes
-tracepack build path/to/episodes path/to/pack --only-failures
+tracepack build path/to/episodes path/to/pack --only-failures --redact
 tracepack inspect path/to/pack
+tracepack export-jsonl path/to/pack path/to/output.jsonl
 ```
 
 ## Pack layout
@@ -66,12 +72,14 @@ pack/
   cases/
     001-billing-timeout.json
     002-search-loop.json
+  # optional export
+  demo_pack.jsonl
 ```
 
 ## Roadmap
 
-- redaction policies for sensitive payloads
-- label files for human triage
+- stronger redaction policies for nested payloads
+- richer label files for human triage
 - export formats for eval harnesses and fine-tuning datasets
 - clustering similar failures across large trace corpora
 
