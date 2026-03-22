@@ -1,0 +1,89 @@
+{
+  "case_count": 4,
+  "cluster_count": 2,
+  "clusters": [
+    {
+      "agents": [
+        {
+          "count": 1,
+          "name": "research-agent"
+        },
+        {
+          "count": 1,
+          "name": "search-agent"
+        }
+      ],
+      "case_count": 2,
+      "example_episode_ids": [
+        "assertion-failed-a",
+        "assertion-failed-b"
+      ],
+      "example_files": [
+        "cases/003-assertion-failed-a.json",
+        "cases/004-assertion-failed-b.json"
+      ],
+      "failures": 2,
+      "models": [
+        {
+          "count": 2,
+          "name": "gpt-4.1"
+        }
+      ],
+      "signature": "failure:note:assertion",
+      "successes": 0,
+      "tags": [
+        {
+          "count": 2,
+          "name": "note"
+        },
+        {
+          "count": 2,
+          "name": "tool_call"
+        },
+        {
+          "count": 1,
+          "name": "model_call"
+        }
+      ]
+    },
+    {
+      "agents": [
+        {
+          "count": 2,
+          "name": "billing-agent"
+        }
+      ],
+      "case_count": 2,
+      "example_episode_ids": [
+        "billing-timeout-a",
+        "billing-timeout-b"
+      ],
+      "example_files": [
+        "cases/001-billing-timeout-a.json",
+        "cases/002-billing-timeout-b.json"
+      ],
+      "failures": 2,
+      "models": [
+        {
+          "count": 2,
+          "name": "gpt-4.1-mini"
+        }
+      ],
+      "signature": "failure:tool_call:web_search",
+      "successes": 0,
+      "tags": [
+        {
+          "count": 2,
+          "name": "tool_call"
+        },
+        {
+          "count": 1,
+          "name": "model_call"
+        }
+      ]
+    }
+  ],
+  "format": "failmap-v1",
+  "source_format": "tracepack-v1",
+  "source_pack": "examples/sample_pack"
+}

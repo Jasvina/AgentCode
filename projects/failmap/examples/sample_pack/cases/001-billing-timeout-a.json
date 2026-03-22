@@ -1,0 +1,4 @@
+{
+  "episode_id": "billing-timeout-a",
+  "signature": "failure:tool_call:web_search"
+}

@@ -47,3 +47,23 @@ jobs:
           tracepack scan examples/source_episodes
           tracepack build examples/source_episodes examples/demo_pack --only-failures
           tracepack inspect examples/demo_pack
+
+  failmap:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: projects/failmap
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - name: Install FailMap
+        run: pip install -e .
+      - name: Run FailMap tests
+        run: python -m unittest discover -s tests -v
+      - name: Run FailMap examples
+        run: |
+          failmap cluster examples/sample_pack examples/clusters.json
+          failmap summarize examples/clusters.json
+          failmap markdown examples/clusters.json examples/report.md

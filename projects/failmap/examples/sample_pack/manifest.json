@@ -1,0 +1,54 @@
+{
+  "format": "tracepack-v1",
+  "case_count": 4,
+  "cases": [
+    {
+      "file": "cases/001-billing-timeout-a.json",
+      "episode_id": "billing-timeout-a",
+      "agent_name": "billing-agent",
+      "model": "gpt-4.1-mini",
+      "prompt_version": "billing-v3",
+      "success": false,
+      "signature": "failure:tool_call:web_search",
+      "tags": ["model_call", "tool_call"],
+      "step_count": 3,
+      "final_output": "Could not retrieve the billing record."
+    },
+    {
+      "file": "cases/002-billing-timeout-b.json",
+      "episode_id": "billing-timeout-b",
+      "agent_name": "billing-agent",
+      "model": "gpt-4.1-mini",
+      "prompt_version": "billing-v3",
+      "success": false,
+      "signature": "failure:tool_call:web_search",
+      "tags": ["tool_call"],
+      "step_count": 2,
+      "final_output": "Billing search timed out again."
+    },
+    {
+      "file": "cases/003-assertion-failed-a.json",
+      "episode_id": "assertion-failed-a",
+      "agent_name": "search-agent",
+      "model": "gpt-4.1",
+      "prompt_version": "search-v2",
+      "success": false,
+      "signature": "failure:note:assertion",
+      "tags": ["model_call", "note", "tool_call"],
+      "step_count": 4,
+      "final_output": "Returned the wrong top result."
+    },
+    {
+      "file": "cases/004-assertion-failed-b.json",
+      "episode_id": "assertion-failed-b",
+      "agent_name": "research-agent",
+      "model": "gpt-4.1",
+      "prompt_version": "search-v2",
+      "success": false,
+      "signature": "failure:note:assertion",
+      "tags": ["note", "tool_call"],
+      "step_count": 5,
+      "final_output": "Cited the wrong source document."
+    }
+  ]
+}

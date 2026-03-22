@@ -10,10 +10,11 @@ I am deliberately not collecting random demos here. Each project is chosen from 
 
 ## Why this repo exists
 
-After surveying today's high-star Agent repositories, two opportunities stood out:
+After surveying today's high-star Agent repositories, three opportunities stood out:
 
 - teams can build agents, but still struggle to replay failures and guard against regressions
 - teams can trace agents, but still lack clean tooling to turn real trajectories into reusable eval packs and benchmark cases
+- teams can collect failures, but still lack a simple OSS layer for clustering recurring failure modes and prioritizing fixes
 
 `AgentCode` is a place to build those missing layers as focused OSS projects.
 
@@ -33,12 +34,6 @@ What it does:
 - validates episodes in CI
 - includes experimental adapters for LangGraph-style events and OpenAI Agents-style items
 
-Best for:
-
-- prompt and model upgrades
-- deterministic bug reproduction
-- CI checks for tool-using agents
-
 ### 2. TracePack
 
 Path: `projects/tracepack`
@@ -52,11 +47,26 @@ What it does:
 - builds a shareable benchmark pack with a manifest and normalized case files
 - helps teams turn production traces into internal eval datasets
 
-Best for:
+### 3. FailMap
 
-- converting traces into benchmark assets
-- curating failure-focused eval packs
-- building research datasets from real agent behavior
+Path: `projects/failmap`
+
+Cluster recurring agent failures from TracePack packs.
+
+What it does:
+
+- reads a TracePack `manifest.json`
+- groups cases by failure signature and tags
+- computes cluster sizes, agents, models, and representative examples
+- exports JSON or Markdown reports for triage and roadmap planning
+
+## Toolchain story
+
+```text
+AgentCI   -> record and diff trajectories
+TracePack -> turn trajectories into reusable benchmark packs
+FailMap   -> cluster failures and prioritize what to fix next
+```
 
 ## Monorepo structure
 
@@ -64,6 +74,7 @@ Best for:
 projects/
   agentci/    replay-first regression testing
   tracepack/  trace-to-benchmark packaging
+  failmap/    failure clustering and reporting
 .github/
   workflows/  monorepo CI
 ```
@@ -94,6 +105,18 @@ tracepack build examples/source_episodes examples/demo_pack --only-failures
 tracepack inspect examples/demo_pack
 ```
 
+### FailMap
+
+```bash
+cd projects/failmap
+python -m venv .venv
+source .venv/bin/activate
+pip install -e .
+failmap cluster examples/sample_pack examples/clusters.json
+failmap summarize examples/clusters.json
+failmap markdown examples/clusters.json examples/report.md
+```
+
 ## Why these projects have star potential
 
 High-star Agent infra repos usually win when they are:
@@ -103,12 +126,13 @@ High-star Agent infra repos usually win when they are:
 3. easy to demo in under five minutes
 4. useful to both researchers and production teams
 
-Both projects in this repo are designed around that rule.
+The projects in this repo are designed around that rule.
 
 ## Roadmap
 
 - add more AgentCI integrations and richer HTML diff reports
 - add TracePack redaction rules, labeling workflows, and dataset export formats
+- add FailMap trend analysis, issue templates, and cluster comparison across releases
 - add more focused projects around agent eval infra, failure mining, and trajectory analytics
 
 ## License
