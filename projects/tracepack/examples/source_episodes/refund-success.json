@@ -1,0 +1,42 @@
+{
+  "agent_name": "triage-agent",
+  "episode_id": "refund-success",
+  "final_output": "Refunds are available within 14 days.",
+  "metrics": {
+    "latency_ms": 40
+  },
+  "model": "gpt-4.1-mini",
+  "prompt_version": "refund-v2",
+  "steps": [
+    {
+      "kind": "model_call",
+      "name": "triage",
+      "payload": {
+        "prompt": "Check refund policy",
+        "response": "Call lookup_policy"
+      }
+    },
+    {
+      "kind": "tool_call",
+      "name": "lookup_policy",
+      "payload": {
+        "arguments": {
+          "topic": "refunds"
+        },
+        "output": {
+          "window_days": 14
+        },
+        "status": "ok"
+      }
+    },
+    {
+      "kind": "model_call",
+      "name": "responder",
+      "payload": {
+        "prompt": "Answer user",
+        "response": "Refunds are available within 14 days."
+      }
+    }
+  ],
+  "success": true
+}

@@ -1,0 +1,38 @@
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "agentci"
+version = "0.2.0"
+description = "Replay-first regression testing for tool-using LLM agents"
+readme = "README.md"
+requires-python = ">=3.10"
+authors = [
+  { name = "Jasvina + Codex" }
+]
+license = "MIT"
+keywords = ["agents", "llm", "testing", "replay", "evals", "ci"]
+classifiers = [
+  "Development Status :: 3 - Alpha",
+  "Intended Audience :: Developers",
+  "Programming Language :: Python :: 3",
+  "Programming Language :: Python :: 3.10",
+  "Programming Language :: Python :: 3.11",
+  "Topic :: Software Development :: Testing",
+]
+dependencies = []
+
+[project.urls]
+Homepage = "https://github.com/Jasvina/agentci"
+Repository = "https://github.com/Jasvina/agentci"
+Issues = "https://github.com/Jasvina/agentci/issues"
+
+[project.scripts]
+agentci = "agentci.cli:main"
+
+[tool.setuptools]
+package-dir = {"" = "src"}
+
+[tool.setuptools.packages.find]
+where = ["src"]

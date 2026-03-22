@@ -1,0 +1,62 @@
+{
+  "agent_name": "research-graph",
+  "episode_id": "langgraph-demo",
+  "final_output": "Refunds are available within 14 days of purchase.",
+  "metrics": {
+    "cost_usd": 0.0008,
+    "latency_ms": 58
+  },
+  "model": "gpt-4.1-mini",
+  "prompt_version": "graph-v1",
+  "seed": 11,
+  "steps": [
+    {
+      "kind": "model_call",
+      "name": "planner",
+      "payload": {
+        "metadata": {
+          "event": "on_chat_model_end",
+          "framework": "langgraph",
+          "node": "planner",
+          "usage": {
+            "total_tokens": 42
+          }
+        },
+        "prompt": "Plan how to answer the user question about refunds.",
+        "response": "I should call lookup_policy."
+      }
+    },
+    {
+      "kind": "tool_call",
+      "name": "lookup_policy",
+      "payload": {
+        "arguments": {
+          "topic": "refund window"
+        },
+        "metadata": {
+          "event": "on_tool_end",
+          "framework": "langgraph",
+          "node": "policy_lookup"
+        },
+        "output": {
+          "policy": "Refunds are allowed within 14 days."
+        },
+        "status": "ok"
+      }
+    },
+    {
+      "kind": "model_call",
+      "name": "responder",
+      "payload": {
+        "metadata": {
+          "event": "on_chat_model_end",
+          "framework": "langgraph",
+          "node": "responder"
+        },
+        "prompt": "Use the policy result to answer the customer.",
+        "response": "Refunds are available within 14 days of purchase."
+      }
+    }
+  ],
+  "success": true
+}

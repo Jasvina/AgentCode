@@ -1,0 +1,67 @@
+{
+  "agent_name": "toy-math-agent",
+  "episode_id": "math-agent-demo",
+  "final_output": "19",
+  "metrics": {
+    "cost_usd": 0.0002,
+    "latency_ms": 34
+  },
+  "model": "demo-model",
+  "prompt_version": "v2",
+  "seed": 7,
+  "steps": [
+    {
+      "kind": "model_call",
+      "name": "model",
+      "payload": {
+        "metadata": {},
+        "prompt": "Compute (2 + 3) * 4 using tools when useful.",
+        "response": "I should call add, then multiply."
+      }
+    },
+    {
+      "kind": "tool_call",
+      "name": "add",
+      "payload": {
+        "arguments": {
+          "a": 2,
+          "b": 3
+        },
+        "metadata": {},
+        "output": 5,
+        "status": "ok"
+      }
+    },
+    {
+      "kind": "tool_call",
+      "name": "multiply",
+      "payload": {
+        "arguments": {
+          "a": 5,
+          "b": 4
+        },
+        "metadata": {},
+        "output": 20,
+        "status": "ok"
+      }
+    },
+    {
+      "kind": "model_call",
+      "name": "model",
+      "payload": {
+        "metadata": {},
+        "prompt": "Return the final answer.",
+        "response": "19"
+      }
+    },
+    {
+      "kind": "note",
+      "name": "assertion",
+      "payload": {
+        "actual": "19",
+        "expected": "20"
+      }
+    }
+  ],
+  "success": true
+}

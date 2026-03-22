@@ -1,0 +1,58 @@
+{
+  "agent_name": "support-agent",
+  "episode_id": "openai-agents-demo",
+  "final_output": "You can request a refund within 14 days.",
+  "metrics": {
+    "cost_usd": 0.0006,
+    "latency_ms": 46
+  },
+  "model": "gpt-4.1-mini",
+  "prompt_version": "agents-v1",
+  "seed": 19,
+  "steps": [
+    {
+      "kind": "model_call",
+      "name": "triage",
+      "payload": {
+        "metadata": {
+          "framework": "openai_agents",
+          "item_type": "message_output_item",
+          "role": "assistant"
+        },
+        "prompt": "Can I get a refund after 10 days?",
+        "response": "I'll check the refund policy."
+      }
+    },
+    {
+      "kind": "tool_call",
+      "name": "lookup_policy",
+      "payload": {
+        "arguments": {
+          "topic": "refunds"
+        },
+        "metadata": {
+          "framework": "openai_agents",
+          "item_type": "tool_result_item"
+        },
+        "output": {
+          "window_days": 14
+        },
+        "status": "ok"
+      }
+    },
+    {
+      "kind": "model_call",
+      "name": "responder",
+      "payload": {
+        "metadata": {
+          "framework": "openai_agents",
+          "item_type": "message_output_item",
+          "role": "assistant"
+        },
+        "prompt": "Can I get a refund after 10 days?",
+        "response": "You can request a refund within 14 days."
+      }
+    }
+  ],
+  "success": true
+}

@@ -1,0 +1,25 @@
+name: ci
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - name: Install package
+        run: pip install -e .
+      - name: Run tests
+        run: python -m unittest discover -s tests -v
+      - name: Run example smoke tests
+        run: |
+          python examples/math_agent.py
+          python examples/make_candidate_episode.py
+          python examples/langgraph_integration.py
+          python examples/openai_agents_integration.py
+          agentci summarize examples/openai_agents_episode.json

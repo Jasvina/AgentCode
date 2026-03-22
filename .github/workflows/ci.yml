@@ -1,0 +1,49 @@
+name: ci
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  agentci:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: projects/agentci
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - name: Install AgentCI
+        run: pip install -e .
+      - name: Run AgentCI tests
+        run: python -m unittest discover -s tests -v
+      - name: Run AgentCI examples
+        run: |
+          python examples/math_agent.py
+          python examples/make_candidate_episode.py
+          python examples/langgraph_integration.py
+          python examples/openai_agents_integration.py
+          agentci summarize examples/openai_agents_episode.json
+
+  tracepack:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: projects/tracepack
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - name: Install TracePack
+        run: pip install -e .
+      - name: Run TracePack tests
+        run: python -m unittest discover -s tests -v
+      - name: Run TracePack examples
+        run: |
+          python examples/make_sample_episodes.py
+          tracepack scan examples/source_episodes
+          tracepack build examples/source_episodes examples/demo_pack --only-failures
+          tracepack inspect examples/demo_pack

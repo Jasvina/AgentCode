@@ -1,0 +1,42 @@
+{
+  "agent_name": "billing-agent",
+  "episode_id": "billing-timeout",
+  "final_output": "I could not verify the invoice status.",
+  "metrics": {
+    "latency_ms": 120
+  },
+  "model": "gpt-4.1-mini",
+  "prompt_version": "billing-v3",
+  "steps": [
+    {
+      "kind": "model_call",
+      "name": "planner",
+      "payload": {
+        "prompt": "Check invoice",
+        "response": "Call invoice_lookup"
+      }
+    },
+    {
+      "kind": "tool_call",
+      "name": "invoice_lookup",
+      "payload": {
+        "arguments": {
+          "invoice_id": "INV-7"
+        },
+        "output": {
+          "error": "timeout"
+        },
+        "status": "error"
+      }
+    },
+    {
+      "kind": "note",
+      "name": "assertion",
+      "payload": {
+        "actual": "timeout",
+        "expected": "status known"
+      }
+    }
+  ],
+  "success": false
+}

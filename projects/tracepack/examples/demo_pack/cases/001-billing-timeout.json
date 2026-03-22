@@ -1,0 +1,16 @@
+{
+  "agent_name": "billing-agent",
+  "episode_id": "billing-timeout",
+  "final_output": "I could not verify the invoice status.",
+  "model": "gpt-4.1-mini",
+  "prompt_version": "billing-v3",
+  "signature": "failure:note:assertion",
+  "source_path": "examples/source_episodes/billing-timeout.json",
+  "step_count": 3,
+  "success": false,
+  "tags": [
+    "model_call",
+    "note",
+    "tool_call"
+  ]
+}
