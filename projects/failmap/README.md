@@ -18,6 +18,7 @@ FailMap focuses on that missing step.
 - exports cluster reports as JSON or Markdown
 - compares two cluster snapshots to show which failure modes are new, resolved, growing, or shrinking
 - generates issue-ready Markdown drafts for the clusters that need triage
+- adds triage metadata such as `priority`, `labels`, and `suggested_owner`
 - keeps the workflow simple enough for CI and team triage
 
 ## Quick start
@@ -40,6 +41,17 @@ failmap issue-drafts examples/compare.json examples/issues
 ```text
 $ failmap issue-drafts examples/compare.json examples/issues
 Wrote 2 issue drafts to examples/issues
+```
+
+Example metadata emitted into each issue draft:
+
+```yaml
+priority: P1
+suggested_owner: tooling
+labels:
+  - failmap
+  - status:new
+  - priority:P1
 ```
 
 ## CLI
@@ -84,6 +96,7 @@ Each generated issue draft includes:
 - the failure signature and status
 - case delta between baseline and candidate
 - representative baseline and candidate examples
+- triage metadata: `priority`, `suggested_owner`, `labels`
 - suggested next steps for triage and regression coverage
 
 ## Roadmap

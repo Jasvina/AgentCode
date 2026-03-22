@@ -1,4 +1,21 @@
+---
+title: "[FailMap] growing: failure:tool_call:web_search"
+priority: P1
+suggested_owner: tooling
+labels:
+  - failmap
+  - status:growing
+  - priority:P1
+  - signature:failure-tool-call-web-search
+---
+
 # [FailMap] growing: failure:tool_call:web_search
+
+## Triage metadata
+
+- Priority: `P1`
+- Suggested owner: `tooling`
+- Labels: `failmap, status:growing, priority:P1, signature:failure-tool-call-web-search`
 
 ## Why this matters
 

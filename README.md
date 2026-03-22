@@ -36,7 +36,7 @@ Build reusable benchmark packs from real agent traces.
 
 Path: `projects/failmap`
 
-Cluster recurring agent failures from TracePack packs, compare failure clusters between releases, and generate issue-ready triage drafts.
+Cluster recurring agent failures from TracePack packs, compare failure clusters between releases, and generate issue-ready triage drafts with priority/owner hints.
 
 ## Toolchain story
 

@@ -3,14 +3,30 @@
   "drafts": [
     {
       "file": "001-new-failure-tool-call-db-lookup.md",
+      "labels": [
+        "failmap",
+        "status:new",
+        "priority:P1",
+        "signature:failure-tool-call-db-lookup"
+      ],
+      "priority": "P1",
       "signature": "failure:tool_call:db_lookup",
       "status": "new",
+      "suggested_owner": "tooling",
       "title": "[FailMap] new: failure:tool_call:db_lookup"
     },
     {
       "file": "002-growing-failure-tool-call-web-search.md",
+      "labels": [
+        "failmap",
+        "status:growing",
+        "priority:P1",
+        "signature:failure-tool-call-web-search"
+      ],
+      "priority": "P1",
       "signature": "failure:tool_call:web_search",
       "status": "growing",
+      "suggested_owner": "tooling",
       "title": "[FailMap] growing: failure:tool_call:web_search"
     }
   ],

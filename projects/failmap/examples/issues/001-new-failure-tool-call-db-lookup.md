@@ -1,4 +1,21 @@
+---
+title: "[FailMap] new: failure:tool_call:db_lookup"
+priority: P1
+suggested_owner: tooling
+labels:
+  - failmap
+  - status:new
+  - priority:P1
+  - signature:failure-tool-call-db-lookup
+---
+
 # [FailMap] new: failure:tool_call:db_lookup
+
+## Triage metadata
+
+- Priority: `P1`
+- Suggested owner: `tooling`
+- Labels: `failmap, status:new, priority:P1, signature:failure-tool-call-db-lookup`
 
 ## Why this matters
 

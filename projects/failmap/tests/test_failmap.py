@@ -169,6 +169,11 @@ class FailMapTests(unittest.TestCase):
             self.assertEqual(len(issue_files), 2)
             self.assertTrue(any("new" in name for name in issue_files))
             self.assertTrue(any("growing" in name for name in issue_files))
+            self.assertEqual(manifest["drafts"][0]["priority"], "P1")
+            self.assertIn("failmap", manifest["drafts"][0]["labels"])
+            first_issue = (output_dir / issue_files[0]).read_text(encoding="utf-8")
+            self.assertIn("priority:", first_issue)
+            self.assertIn("suggested_owner:", first_issue)
 
 
 if __name__ == "__main__":
