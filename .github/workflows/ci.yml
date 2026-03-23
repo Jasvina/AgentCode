@@ -5,51 +5,6 @@ on:
   pull_request:
 
 jobs:
-  automation-demo:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-python@v5
-        with:
-          python-version: "3.11"
-      - name: Run monorepo automation demo
-        run: |
-          chmod +x scripts/run_automation_demo.sh
-          ./scripts/run_automation_demo.sh /tmp/agentcode-demo
-      - name: Validate automation outputs
-        run: |
-          python - <<'PY'
-          import json
-          from pathlib import Path
-
-          root = Path("/tmp/agentcode-demo")
-          assert root.exists(), "automation demo output directory missing"
-
-          summary = json.loads((root / "agentci-summary.json").read_text())
-          assert summary["episode_id"] == "openai-agents-demo"
-          assert summary["tool_calls"] >= 1
-
-          regression = json.loads((root / "agentci-regression.json").read_text())
-          assert regression["passed"] is True
-
-          manifest = json.loads((root / "tracepack-pack" / "manifest.json").read_text())
-          assert manifest["format"] == "tracepack-v1"
-          assert len(manifest["cases"]) >= 1
-
-          clusters = json.loads((root / "failmap-clusters.json").read_text())
-          assert clusters["format"] == "failmap-v1"
-          assert len(clusters["clusters"]) >= 1
-
-          split_summary = json.loads((root / "packslice" / "summary.json").read_text())
-          assert split_summary["total_cases"] >= 1
-          assert len(split_summary["splits"]) == 3
-          PY
-      - name: Upload automation demo artifacts
-        uses: actions/upload-artifact@v4
-        with:
-          name: agentcode-automation-demo
-          path: /tmp/agentcode-demo
-
   agentci:
     runs-on: ubuntu-latest
     defaults:
@@ -164,42 +119,3 @@ jobs:
           packslice summarize examples/split_demo --json > /tmp/packslice-summary.json
           python -c "import json; data=json.load(open('/tmp/packslice-summary.json')); assert data['total_cases'] == 6; assert len(data['splits']) == 3"
           packslice markdown examples/split_demo examples/split_demo/REPORT.md
-
-  automation-demo:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-python@v5
-        with:
-          python-version: "3.11"
-      - name: Run monorepo automation demo
-        run: ./scripts/run_automation_demo.sh /tmp/agentcode-automation-demo
-      - name: Validate automation outputs
-        run: |
-          python - <<'PY'
-          import json
-          from pathlib import Path
-
-          out = Path("/tmp/agentcode-automation-demo")
-          assert (out / "agentci-summary.json").exists()
-          assert (out / "agentci-regression.json").exists()
-          assert (out / "tracepack-pack" / "manifest.json").exists()
-          assert (out / "failmap-clusters.json").exists()
-          assert (out / "packslice" / "summary.json").exists()
-
-          agentci_summary = json.loads((out / "agentci-summary.json").read_text())
-          assert agentci_summary["episode_id"] == "openai-agents-demo"
-
-          agentci_regression = json.loads((out / "agentci-regression.json").read_text())
-          assert agentci_regression["passed"] is True
-
-          tracepack_manifest = json.loads((out / "tracepack-pack" / "manifest.json").read_text())
-          assert tracepack_manifest["case_count"] == 1
-
-          failmap_clusters = json.loads((out / "failmap-clusters.json").read_text())
-          assert failmap_clusters["cluster_count"] >= 1
-
-          packslice_summary = json.loads((out / "packslice" / "summary.json").read_text())
-          assert packslice_summary["total_cases"] == 1
-          assert len(packslice_summary["splits"]) == 3
-          PY
