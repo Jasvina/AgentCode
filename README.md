@@ -54,6 +54,19 @@ FailMap   -> cluster failures, compare releases, generate triage issues, bundle 
 PackSlice -> split packs into balanced train/eval/test datasets
 ```
 
+## Machine-readable CLI story
+
+All four projects now support JSON-friendly CLI flows, so they can be chained in CI without scraping human text output:
+
+```bash
+agentci summarize projects/agentci/examples/math_episode.json --json
+tracepack scan projects/tracepack/examples/source_episodes --json
+failmap summarize projects/failmap/examples/clusters.json --json
+packslice summarize projects/packslice/examples/split_demo --json
+```
+
+That makes it easier to build release checks, artifact pipelines, and automated dashboards on top of the same OSS commands shown in the READMEs.
+
 ## Monorepo structure
 
 ```text
@@ -98,6 +111,7 @@ tracepack build examples/source_episodes examples/demo_pack --only-failures --re
 tracepack inspect examples/demo_pack
 tracepack export-jsonl examples/demo_pack examples/demo_pack.jsonl
 tracepack export-chat examples/demo_pack examples/demo_chat.jsonl
+tracepack scan examples/source_episodes --json
 ```
 
 ### FailMap
@@ -111,6 +125,7 @@ failmap compare examples/baseline_clusters.json examples/candidate_clusters.json
 failmap issue-drafts examples/compare.json examples/issues --rules examples/triage_rules.json
 failmap issue-bundle examples/issues examples/bundle
 failmap trend examples/trends.json examples/baseline_clusters.json examples/candidate_clusters.json examples/release3_clusters.json
+failmap compare-summary examples/compare.json --json
 ```
 
 ### PackSlice
@@ -123,6 +138,7 @@ pip install -e .
 packslice split examples/sample_pack examples/split_demo --group-by signature
 packslice summarize examples/split_demo
 packslice markdown examples/split_demo examples/split_demo/REPORT.md
+packslice summarize examples/split_demo --json
 ```
 
 ## Why these projects have star potential

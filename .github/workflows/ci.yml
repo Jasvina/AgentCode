@@ -26,8 +26,12 @@ jobs:
           python examples/langgraph_integration.py
           python examples/openai_agents_integration.py
           agentci summarize examples/openai_agents_episode.json
+          agentci summarize examples/openai_agents_episode.json --json > /tmp/agentci-summary.json
+          python -c "import json; data=json.load(open('/tmp/agentci-summary.json')); assert data['episode_id'] == 'openai-agents-demo'; assert data['tool_calls'] >= 1"
           agentci diff-html examples/math_episode.json examples/math_episode_candidate.json examples/math_diff.html
           agentci assert-regression examples/math_episode.json examples/math_episode_latency_candidate.json --ignore-diff-prefix metric:latency_ms
+          agentci assert-regression examples/math_episode.json examples/math_episode_latency_candidate.json --ignore-diff-prefix metric:latency_ms --json > /tmp/agentci-regression.json
+          python -c "import json; data=json.load(open('/tmp/agentci-regression.json')); assert data['passed'] is True"
           agentci detect-flaky examples/math_episode.json examples/math_episode_latency_candidate.json examples/math_episode_candidate.json
 
   tracepack:
@@ -48,8 +52,12 @@ jobs:
         run: |
           python examples/make_sample_episodes.py
           tracepack scan examples/source_episodes
+          tracepack scan examples/source_episodes --json > /tmp/tracepack-scan.json
+          python -c "import json; data=json.load(open('/tmp/tracepack-scan.json')); assert data['episode_count'] == 3; assert data['failures'] == 1"
           tracepack build examples/source_episodes examples/demo_pack --only-failures --redact --max-per-signature 1
           tracepack inspect examples/demo_pack
+          tracepack inspect examples/demo_pack --json > /tmp/tracepack-inspect.json
+          python -c "import json; data=json.load(open('/tmp/tracepack-inspect.json')); assert data['case_count'] == 1; assert data['redacted'] is True"
           tracepack export-jsonl examples/demo_pack examples/demo_pack.jsonl
           tracepack export-chat examples/demo_pack examples/demo_chat.jsonl
 
@@ -71,15 +79,23 @@ jobs:
         run: |
           failmap cluster examples/sample_pack examples/clusters.json
           failmap summarize examples/clusters.json
+          failmap summarize examples/clusters.json --json > /tmp/failmap-summary.json
+          python -c "import json; data=json.load(open('/tmp/failmap-summary.json')); assert data['cluster_count'] >= 1; assert data['case_count'] >= 1"
           failmap markdown examples/clusters.json examples/report.md
           failmap compare examples/baseline_clusters.json examples/candidate_clusters.json examples/compare.json
           failmap compare-summary examples/compare.json
+          failmap compare-summary examples/compare.json --json > /tmp/failmap-compare.json
+          python -c "import json; data=json.load(open('/tmp/failmap-compare.json')); assert 'summary' in data; assert data['cluster_count'] >= 1"
           failmap compare-markdown examples/compare.json examples/compare.md
           failmap issue-drafts examples/compare.json examples/issues --rules examples/triage_rules.json
           failmap issue-bundle examples/issues examples/bundle
           failmap issue-bundle-summary examples/bundle/bundle.json
+          failmap issue-bundle-summary examples/bundle/bundle.json --json > /tmp/failmap-bundle.json
+          python -c "import json; data=json.load(open('/tmp/failmap-bundle.json')); assert data['draft_count'] >= 1"
           failmap trend examples/trends.json examples/baseline_clusters.json examples/candidate_clusters.json examples/release3_clusters.json
           failmap trend-summary examples/trends.json
+          failmap trend-summary examples/trends.json --json > /tmp/failmap-trends.json
+          python -c "import json; data=json.load(open('/tmp/failmap-trends.json')); assert data['snapshot_count'] == 3"
           failmap trend-markdown examples/trends.json examples/trends.md
 
   packslice:
@@ -100,4 +116,6 @@ jobs:
         run: |
           packslice split examples/sample_pack examples/split_demo --group-by signature --train-ratio 70 --eval-ratio 15 --test-ratio 15
           packslice summarize examples/split_demo
+          packslice summarize examples/split_demo --json > /tmp/packslice-summary.json
+          python -c "import json; data=json.load(open('/tmp/packslice-summary.json')); assert data['total_cases'] == 6; assert len(data['splits']) == 3"
           packslice markdown examples/split_demo examples/split_demo/REPORT.md
