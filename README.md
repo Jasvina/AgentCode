@@ -33,6 +33,20 @@ This is the intended product story for the monorepo:
 - `PackSlice` creates stable train/eval/test slices from the same pack
 - the root CI workflow validates that the whole chain works end to end
 
+## Quick demo output
+
+<p align="center">
+  <img src="docs/assets/agentcode-demo-terminal.svg" alt="AgentCode terminal-style demo output" width="100%" />
+</p>
+
+If you want a one-command walkthrough of the whole repo:
+
+```bash
+./scripts/run_automation_demo.sh /tmp/agentcode-demo
+```
+
+That gives visitors an immediate answer to the most important README question: “what does this repo actually produce when I run it?”
+
 ## Projects
 
 ### 1. AgentCI
@@ -81,7 +95,7 @@ packslice summarize projects/packslice/examples/split_demo --json
 
 That makes it easier to build release checks, artifact pipelines, and automated dashboards on top of the same OSS commands shown in the READMEs.
 
-For a fuller walkthrough, see `docs/automation.md` and the companion script `scripts/run_automation_demo.sh`.
+For a fuller walkthrough, see `docs/automation.md`, the companion script `scripts/run_automation_demo.sh`, and the monorepo contributor guide in `CONTRIBUTING.md`.
 
 ## What the monorepo demo produces
 
@@ -114,6 +128,8 @@ projects/
 .github/
   workflows/  monorepo CI
 ```
+
+If you want to contribute at the monorepo level, start with `CONTRIBUTING.md`.
 
 ## Quick start
 
