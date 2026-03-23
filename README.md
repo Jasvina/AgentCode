@@ -67,6 +67,8 @@ packslice summarize projects/packslice/examples/split_demo --json
 
 That makes it easier to build release checks, artifact pipelines, and automated dashboards on top of the same OSS commands shown in the READMEs.
 
+For a fuller walkthrough, see `docs/automation.md` and the companion script `scripts/run_automation_demo.sh`.
+
 ## Monorepo structure
 
 ```text
