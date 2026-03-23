@@ -16,11 +16,17 @@ def _positive_int(value: str) -> int:
 
 
 def _cmd_split(args: argparse.Namespace) -> int:
+    if args.success_only and args.failure_only:
+        raise SystemExit("--success-only and --failure-only cannot be used together")
     summary = split_pack(
         args.pack,
         args.output,
         ratios=(args.train_ratio, args.eval_ratio, args.test_ratio),
         group_by=args.group_by,
+        include_labels=tuple(args.include_label),
+        success_mode="success-only" if args.success_only else "failure-only" if args.failure_only else "all",
+        chronological=args.chronological,
+        order_by=args.order_by,
     )
     print(f"Wrote split pack to {args.output}")
     print(summarize_splits(summary))
@@ -48,6 +54,11 @@ def build_parser() -> argparse.ArgumentParser:
     split.add_argument("pack")
     split.add_argument("output")
     split.add_argument("--group-by", default="signature", choices=["signature", "agent_name", "model"])
+    split.add_argument("--order-by", default="episode_id", choices=["episode_id", "file", "source_path"])
+    split.add_argument("--chronological", action="store_true", help="preserve ordered contiguous slices per group")
+    split.add_argument("--include-label", action="append", default=[], help="only keep cases that include this label")
+    split.add_argument("--success-only", action="store_true", help="only split successful cases")
+    split.add_argument("--failure-only", action="store_true", help="only split failing cases")
     split.add_argument("--train-ratio", type=_positive_int, default=70)
     split.add_argument("--eval-ratio", type=_positive_int, default=15)
     split.add_argument("--test-ratio", type=_positive_int, default=15)

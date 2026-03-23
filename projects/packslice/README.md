@@ -19,6 +19,8 @@ PackSlice focuses on that layer.
 - reads a TracePack `manifest.json`
 - groups cases by `signature`, `agent_name`, or `model`
 - creates balanced `train`, `eval`, and `test` subsets
+- supports label filters and success/failure-only slicing
+- supports chronological contiguous slicing for release-style evaluation
 - copies referenced case files into each split directory
 - writes per-split `manifest.json` files plus a top-level `summary.json`
 - prints compact split summaries for CI logs
@@ -33,6 +35,7 @@ pip install -e .
 packslice split examples/sample_pack examples/split_demo --group-by signature --train-ratio 70 --eval-ratio 15 --test-ratio 15
 packslice summarize examples/split_demo
 packslice markdown examples/split_demo examples/split_demo/REPORT.md
+packslice split examples/sample_pack examples/failure_only --group-by signature --failure-only --chronological
 ```
 
 ## Example output
@@ -50,7 +53,8 @@ Splits:
 ## CLI
 
 ```bash
-packslice split path/to/tracepack path/to/output_dir --group-by signature
+packslice split path/to/tracepack path/to/output_dir --group-by signature --include-label status:failure
+packslice split path/to/tracepack path/to/output_dir --group-by signature --chronological --order-by source_path
 packslice summarize path/to/output_dir
 packslice markdown path/to/output_dir path/to/report.md
 ```
@@ -74,7 +78,7 @@ split_demo/
 ## Roadmap
 
 - deterministic shuffling with user-provided seeds
-- label-aware and success-aware filters
+- stronger label-aware and success-aware slice policies
 - temporal splits for release-over-release evaluation
 - stratified slicing for chat export datasets
 

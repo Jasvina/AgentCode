@@ -3,9 +3,9 @@
   "cases": [
     {
       "agent_name": "research-agent",
-      "episode_id": "assert-a",
-      "file": "cases/004-assert-a.json",
-      "final_output": "assert a",
+      "episode_id": "assert-c",
+      "file": "cases/006-assert-c.json",
+      "final_output": "assert c",
       "labels": [
         "signature:failure-note-assertion"
       ],
@@ -19,9 +19,9 @@
     },
     {
       "agent_name": "billing-agent",
-      "episode_id": "billing-a",
-      "file": "cases/001-billing-a.json",
-      "final_output": "timeout a",
+      "episode_id": "billing-c",
+      "file": "cases/003-billing-c.json",
+      "final_output": "timeout c",
       "labels": [
         "signature:failure-tool-call-web-search"
       ],
@@ -34,10 +34,10 @@
       ]
     }
   ],
-  "chronological": false,
+  "chronological": true,
   "filters": {
     "include_labels": [],
-    "success_mode": "all"
+    "success_mode": "failure-only"
   },
   "format": "packslice-v1",
   "group_by": "signature",
@@ -49,5 +49,5 @@
   },
   "source_format": "tracepack-v1",
   "source_pack": "examples/sample_pack",
-  "split": "train"
+  "split": "test"
 }

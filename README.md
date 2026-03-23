@@ -43,7 +43,7 @@ Cluster recurring agent failures from TracePack packs, compare releases, generat
 
 Path: `projects/packslice`
 
-Create balanced train/eval/test splits from TracePack packs while preserving signature, agent, or model distributions.
+Create balanced train/eval/test splits from TracePack packs with distribution-aware, label-aware, and chronological slicing modes.
 
 ## Toolchain story
 

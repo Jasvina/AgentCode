@@ -34,8 +34,14 @@
       ]
     }
   ],
+  "chronological": false,
+  "filters": {
+    "include_labels": [],
+    "success_mode": "all"
+  },
   "format": "packslice-v1",
   "group_by": "signature",
+  "order_by": "episode_id",
   "ratios": {
     "eval": 15,
     "test": 15,

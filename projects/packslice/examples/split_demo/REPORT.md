@@ -2,6 +2,13 @@
 
 - Total cases: 6
 - Group by: `signature`
+- Order by: `episode_id`
+- Chronological: `False`
+
+## Filters
+
+- Success mode: `all`
+- Include labels: `none`
 
 ## train
 

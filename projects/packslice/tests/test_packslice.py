@@ -15,26 +15,27 @@ class PackSliceTests(unittest.TestCase):
         cases_dir.mkdir(parents=True, exist_ok=True)
         cases = []
         items = [
-            ("billing-a", "failure:tool_call:web_search"),
-            ("billing-b", "failure:tool_call:web_search"),
-            ("billing-c", "failure:tool_call:web_search"),
-            ("assert-a", "failure:note:assertion"),
-            ("assert-b", "failure:note:assertion"),
-            ("assert-c", "failure:note:assertion"),
+            ("billing-a", "failure:tool_call:web_search", False),
+            ("billing-b", "failure:tool_call:web_search", False),
+            ("billing-c", "failure:tool_call:web_search", True),
+            ("assert-a", "failure:note:assertion", False),
+            ("assert-b", "failure:note:assertion", False),
+            ("assert-c", "failure:note:assertion", True),
         ]
-        for index, (episode_id, signature) in enumerate(items, start=1):
+        for index, (episode_id, signature, success) in enumerate(items, start=1):
             filename = f"cases/{index:03d}-{episode_id}.json"
             payload = {
                 "episode_id": episode_id,
                 "agent_name": "demo-agent",
                 "model": "demo-model",
                 "prompt_version": "v1",
-                "success": False,
+                "success": success,
                 "signature": signature,
                 "final_output": episode_id,
                 "file": filename,
-                "labels": [f"signature:{signature.replace(':', '-')}"],
+                "labels": [f"signature:{signature.replace(':', '-')}", "status:success" if success else "status:failure"],
                 "tags": ["tool_call"],
+                "source_path": f"episodes/{index:03d}.json",
             }
             (root / filename).write_text(json.dumps(payload, indent=2) + "\n", encoding="utf-8")
             cases.append(payload)
@@ -68,6 +69,8 @@ class PackSliceTests(unittest.TestCase):
         payload = {
             "total_cases": 10,
             "group_by": "signature",
+            "order_by": "episode_id",
+            "chronological": False,
             "splits": [
                 {"name": "train", "case_count": 7},
                 {"name": "eval", "case_count": 2},
@@ -82,6 +85,9 @@ class PackSliceTests(unittest.TestCase):
         payload = {
             "total_cases": 6,
             "group_by": "signature",
+            "order_by": "episode_id",
+            "chronological": True,
+            "filters": {"success_mode": "failure-only", "include_labels": ["status:failure"]},
             "splits": [
                 {
                     "name": "train",
@@ -94,6 +100,43 @@ class PackSliceTests(unittest.TestCase):
         self.assertIn("# PackSlice Report", report)
         self.assertIn("## train", report)
         self.assertIn("failure:note:assertion", report)
+        self.assertIn("Chronological", report)
+
+    def test_split_pack_can_filter_labels_and_success(self):
+        with tempfile.TemporaryDirectory() as tmpdir:
+            root = Path(tmpdir) / "sample_pack"
+            root.mkdir()
+            self._write_pack(root)
+            out = Path(tmpdir) / "splits"
+            summary = split_pack(
+                root,
+                out,
+                include_labels=("status:failure",),
+                success_mode="failure-only",
+                ratios=(1, 1, 1),
+            )
+            self.assertEqual(summary["total_cases"], 4)
+            train_manifest = json.loads((out / "train" / "manifest.json").read_text(encoding="utf-8"))
+            all_cases = train_manifest["cases"]
+            self.assertTrue(all(case["success"] is False for case in all_cases))
+
+    def test_chronological_split_keeps_ordered_groups(self):
+        with tempfile.TemporaryDirectory() as tmpdir:
+            root = Path(tmpdir) / "sample_pack"
+            root.mkdir()
+            self._write_pack(root)
+            out = Path(tmpdir) / "splits"
+            split_pack(root, out, ratios=(1, 1, 1), chronological=True, order_by="source_path")
+            train_manifest = json.loads((out / "train" / "manifest.json").read_text(encoding="utf-8"))
+            eval_manifest = json.loads((out / "eval" / "manifest.json").read_text(encoding="utf-8"))
+            self.assertEqual(
+                [case["episode_id"] for case in train_manifest["cases"]],
+                ["assert-a", "billing-a"],
+            )
+            self.assertEqual(
+                [case["episode_id"] for case in eval_manifest["cases"]],
+                ["assert-b", "billing-b"],
+            )
 
 
 if __name__ == "__main__":

@@ -34,10 +34,10 @@
       ]
     }
   ],
-  "chronological": false,
+  "chronological": true,
   "filters": {
     "include_labels": [],
-    "success_mode": "all"
+    "success_mode": "failure-only"
   },
   "format": "packslice-v1",
   "group_by": "signature",
