@@ -19,6 +19,20 @@ After surveying today's high-star Agent repositories, four opportunities stood o
 
 `AgentCode` is a place to build those missing layers as focused OSS projects.
 
+## Architecture at a glance
+
+<p align="center">
+  <img src="docs/assets/agentcode-overview.svg" alt="AgentCode architecture overview" width="100%" />
+</p>
+
+This is the intended product story for the monorepo:
+
+- `AgentCI` turns real runs into replayable regression artifacts
+- `TracePack` packages those runs into reusable benchmark cases
+- `FailMap` turns repeated failures into triage-ready clusters
+- `PackSlice` creates stable train/eval/test slices from the same pack
+- the root CI workflow validates that the whole chain works end to end
+
 ## Projects
 
 ### 1. AgentCI
@@ -68,6 +82,26 @@ packslice summarize projects/packslice/examples/split_demo --json
 That makes it easier to build release checks, artifact pipelines, and automated dashboards on top of the same OSS commands shown in the READMEs.
 
 For a fuller walkthrough, see `docs/automation.md` and the companion script `scripts/run_automation_demo.sh`.
+
+## What the monorepo demo produces
+
+The root workflow now runs an end-to-end automation demo and uploads artifacts that mirror a real team handoff:
+
+```text
+agentci-summary.json
+agentci-regression.json
+tracepack-pack/
+  manifest.json
+  cases/
+failmap-clusters.json
+packslice/
+  summary.json
+  train/
+  eval/
+  test/
+```
+
+That makes the repo feel less like four isolated READMEs and more like one coherent toolchain.
 
 ## Monorepo structure
 
