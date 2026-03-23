@@ -3,9 +3,12 @@ from __future__ import annotations
 import json
 import tempfile
 import unittest
+from contextlib import redirect_stdout
+from io import StringIO
 from pathlib import Path
 
 from tracepack.builder import build_pack, export_pack_chat_jsonl, export_pack_jsonl
+from tracepack.cli import main as cli_main
 from tracepack.scanner import scan_directory
 
 
@@ -126,6 +129,53 @@ class TracePackTests(unittest.TestCase):
             self.assertEqual(rows[0]['messages'][0]['content'], 'p')
             self.assertEqual(rows[0]['messages'][1]['role'], 'assistant')
             self.assertEqual(rows[0]['metadata']['episode_id'], 'episode-a')
+
+    def test_scan_cli_can_emit_json(self):
+        with tempfile.TemporaryDirectory() as tmpdir:
+            root = Path(tmpdir)
+            self._make_episode(root / 'a.json', 'episode-a', True)
+            self._make_episode(root / 'b.json', 'episode-b', False)
+            output = StringIO()
+            with redirect_stdout(output):
+                code = cli_main(['scan', str(root), '--json'])
+        payload = json.loads(output.getvalue())
+        self.assertEqual(code, 0)
+        self.assertEqual(payload['episode_count'], 2)
+        self.assertEqual(payload['successes'], 1)
+        self.assertEqual(payload['failures'], 1)
+
+    def test_inspect_cli_can_emit_json(self):
+        with tempfile.TemporaryDirectory() as tmpdir:
+            root = Path(tmpdir) / 'episodes'
+            root.mkdir()
+            self._make_episode(root / 'a.json', 'episode-a', True)
+            self._make_episode(root / 'b.json', 'episode-b', False)
+            out = Path(tmpdir) / 'pack'
+            build_pack(root, out, redact=True)
+            output = StringIO()
+            with redirect_stdout(output):
+                code = cli_main(['inspect', str(out), '--json'])
+        payload = json.loads(output.getvalue())
+        self.assertEqual(code, 0)
+        self.assertEqual(payload['case_count'], 2)
+        self.assertTrue(payload['redacted'])
+        self.assertIn('success', payload['signatures'])
+
+    def test_export_jsonl_cli_can_emit_json(self):
+        with tempfile.TemporaryDirectory() as tmpdir:
+            root = Path(tmpdir) / 'episodes'
+            root.mkdir()
+            self._make_episode(root / 'a.json', 'episode-a', True)
+            out = Path(tmpdir) / 'pack'
+            build_pack(root, out)
+            jsonl_path = Path(tmpdir) / 'pack.jsonl'
+            output = StringIO()
+            with redirect_stdout(output):
+                code = cli_main(['export-jsonl', str(out), str(jsonl_path), '--json'])
+        payload = json.loads(output.getvalue())
+        self.assertEqual(code, 0)
+        self.assertEqual(payload['count'], 1)
+        self.assertEqual(payload['format'], 'jsonl')
 
 
 if __name__ == '__main__':

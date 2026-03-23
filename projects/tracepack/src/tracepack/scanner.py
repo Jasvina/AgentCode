@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from dataclasses import dataclass, field
+from dataclasses import asdict, dataclass, field
 from pathlib import Path
 
 from .io import find_episode_files, load_episode
@@ -25,6 +25,9 @@ class CaseSummary:
     steps: list[dict] = field(default_factory=list)
     contains_sensitive: bool = False
 
+    def to_dict(self) -> dict:
+        return asdict(self)
+
 
 @dataclass
 class PackSummary:
@@ -45,6 +48,16 @@ class PackSummary:
             for tag in episode.tags:
                 counts[tag] = counts.get(tag, 0) + 1
         return counts
+
+    def to_dict(self) -> dict:
+        return {
+            "episode_count": len(self.episodes),
+            "successes": self.successes,
+            "failures": self.failures,
+            "kind_counts": dict(sorted(self.kind_counts.items())),
+            "sensitive": sum(1 for episode in self.episodes if episode.contains_sensitive),
+            "episodes": [episode.to_dict() for episode in self.episodes],
+        }
 
 
 def _failure_signature(episode: Episode) -> str:

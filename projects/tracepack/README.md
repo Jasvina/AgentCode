@@ -41,6 +41,7 @@ tracepack scan examples/source_episodes
 tracepack build examples/source_episodes examples/demo_pack --only-failures --redact
 tracepack inspect examples/demo_pack
 tracepack export-jsonl examples/demo_pack examples/demo_pack.jsonl
+tracepack scan examples/source_episodes --json
 ```
 
 ## Example output
@@ -55,6 +56,19 @@ Kinds: model_call=3, note=1, tool_call=3
 
 $ tracepack build examples/source_episodes examples/demo_pack --only-failures --redact
 Built pack with 1 cases at examples/demo_pack
+
+$ tracepack scan examples/source_episodes --json
+{
+  "episode_count": 3,
+  "failures": 1,
+  "kind_counts": {
+    "model_call": 3,
+    "note": 1,
+    "tool_call": 3
+  },
+  "sensitive": 1,
+  "successes": 2
+}
 ```
 
 ## CLI
@@ -66,7 +80,10 @@ tracepack build path/to/episodes path/to/pack --only-failures --max-per-signatur
 tracepack inspect path/to/pack
 tracepack export-jsonl path/to/pack path/to/output.jsonl
 tracepack export-chat path/to/pack path/to/chat.jsonl --success-only
+tracepack inspect path/to/pack --json
 ```
+
+Read-only CLI commands also support `--json` for scripting and CI handoffs.
 
 ## Pack layout
 
