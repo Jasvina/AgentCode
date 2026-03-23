@@ -2,9 +2,10 @@ from __future__ import annotations
 
 import tempfile
 import unittest
-from pathlib import Path
+import json
 from io import StringIO
 from contextlib import redirect_stdout
+from pathlib import Path
 
 from agentci.adapters import LangGraphEventAdapter, OpenAIAgentsEventAdapter
 from agentci.cli import main as cli_main
@@ -162,6 +163,75 @@ class AgentCITests(unittest.TestCase):
         self.assertEqual(code, 0)
         self.assertIn("Unstable fields: 1", text)
         self.assertIn("metric:latency_ms", text)
+
+    def test_summarize_cli_can_emit_json(self):
+        episode = self._build_episode()
+        with tempfile.TemporaryDirectory() as tmpdir:
+            path = Path(tmpdir) / "episode.json"
+            episode.save(path)
+            output = StringIO()
+            with redirect_stdout(output):
+                code = cli_main(["summarize", str(path), "--json"])
+        payload = json.loads(output.getvalue())
+        self.assertEqual(code, 0)
+        self.assertEqual(payload["episode_id"], "test-episode")
+        self.assertEqual(payload["tool_calls"], 1)
+        self.assertEqual(payload["model_calls"], 1)
+
+    def test_diff_cli_can_emit_json(self):
+        baseline = self._build_episode()
+        candidate = self._build_episode()
+        candidate.final_output = "wrong"
+        with tempfile.TemporaryDirectory() as tmpdir:
+            root = Path(tmpdir)
+            baseline_path = root / "baseline.json"
+            candidate_path = root / "candidate.json"
+            baseline.save(baseline_path)
+            candidate.save(candidate_path)
+            output = StringIO()
+            with redirect_stdout(output):
+                code = cli_main(["diff", str(baseline_path), str(candidate_path), "--json"])
+        payload = json.loads(output.getvalue())
+        self.assertEqual(code, 0)
+        self.assertTrue(payload["changed"])
+        self.assertTrue(any(item.startswith("final_output") for item in payload["items"]))
+
+    def test_assert_regression_cli_can_emit_json_failure(self):
+        baseline = self._build_episode()
+        candidate = self._build_episode()
+        candidate.final_output = "bad"
+        with tempfile.TemporaryDirectory() as tmpdir:
+            root = Path(tmpdir)
+            baseline_path = root / "baseline.json"
+            candidate_path = root / "candidate.json"
+            baseline.save(baseline_path)
+            candidate.save(candidate_path)
+            output = StringIO()
+            with redirect_stdout(output):
+                code = cli_main(["assert-regression", str(baseline_path), str(candidate_path), "--json"])
+        payload = json.loads(output.getvalue())
+        self.assertEqual(code, 1)
+        self.assertFalse(payload["passed"])
+        self.assertIn("final_output", payload["diff_items"][0])
+
+    def test_detect_flaky_cli_can_emit_json(self):
+        baseline = self._build_episode()
+        candidate = self._build_episode()
+        candidate.metrics["latency_ms"] = 9
+        with tempfile.TemporaryDirectory() as tmpdir:
+            root = Path(tmpdir)
+            baseline_path = root / "baseline.json"
+            candidate_path = root / "candidate.json"
+            baseline.save(baseline_path)
+            candidate.save(candidate_path)
+            output = StringIO()
+            with redirect_stdout(output):
+                code = cli_main(["detect-flaky", str(baseline_path), str(candidate_path), "--json"])
+        payload = json.loads(output.getvalue())
+        self.assertEqual(code, 0)
+        self.assertEqual(payload["episode_count"], 2)
+        self.assertFalse(payload["is_stable"])
+        self.assertEqual(payload["unstable_fields"][0]["name"], "metric:latency_ms")
 
     def test_load_rejects_invalid_episode(self):
         with tempfile.TemporaryDirectory() as tmpdir:

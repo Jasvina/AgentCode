@@ -11,6 +11,12 @@ class EpisodeDiff:
     changed: bool
     items: list[str] = field(default_factory=list)
 
+    def to_dict(self) -> dict[str, object]:
+        return {
+            "changed": self.changed,
+            "items": list(self.items),
+        }
+
 
 def _append_if_changed(items: list[str], label: str, left: Any, right: Any) -> None:
     if left != right:

@@ -68,6 +68,7 @@ agentci diff examples/math_episode.json examples/math_episode_candidate.json
 agentci diff-html examples/math_episode.json examples/math_episode_candidate.json examples/math_diff.html
 agentci assert-regression examples/math_episode.json examples/math_episode_latency_candidate.json --ignore-diff-prefix metric:latency_ms
 agentci detect-flaky examples/math_episode.json examples/math_episode_latency_candidate.json examples/math_episode_candidate.json
+agentci assert-regression examples/math_episode.json examples/math_episode_latency_candidate.json --ignore-diff-prefix metric:latency_ms --json
 ```
 
 ## Example output
@@ -100,6 +101,15 @@ AgentCI regression assertion passed
 $ agentci detect-flaky examples/math_episode.json examples/math_episode_latency_candidate.json examples/math_episode_candidate.json
 Episodes analyzed: 3
 Unstable fields: 5
+
+$ agentci assert-regression examples/math_episode.json examples/math_episode_latency_candidate.json --ignore-diff-prefix metric:latency_ms --json
+{
+  "baseline_path": "examples/math_episode.json",
+  "candidate_path": "examples/math_episode_latency_candidate.json",
+  "diff_items": [],
+  "passed": true,
+  "replay_mismatches": []
+}
 ```
 
 ## Pytest regression usage
@@ -140,6 +150,19 @@ agentci assert-regression \
 ```
 
 This exits non-zero when meaningful trajectory changes or replay mismatches appear.
+
+If you want to feed results into another CI step, every read-only CLI command also supports `--json`:
+
+```bash
+agentci summarize examples/math_episode.json --json | jq .
+agentci diff examples/math_episode.json examples/math_episode_candidate.json --json | jq .
+agentci detect-flaky examples/math_episode.json examples/math_episode_latency_candidate.json --json | jq .
+agentci assert-regression \
+  examples/math_episode.json \
+  examples/math_episode_latency_candidate.json \
+  --ignore-diff-prefix metric:latency_ms \
+  --json
+```
 
 ## Flaky-run analysis
 

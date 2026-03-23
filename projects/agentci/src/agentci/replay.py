@@ -11,6 +11,12 @@ class ReplayResult:
     matched: bool
     mismatches: list[str] = field(default_factory=list)
 
+    def to_dict(self) -> dict[str, object]:
+        return {
+            "matched": self.matched,
+            "mismatches": list(self.mismatches),
+        }
+
 
 def replay_episode(episode: Episode, strict: bool = True) -> ReplayResult:
     mismatches: list[str] = []

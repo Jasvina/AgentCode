@@ -16,6 +16,15 @@ class RegressionResult:
     diff_items: list[str] = field(default_factory=list)
     replay_mismatches: list[str] = field(default_factory=list)
 
+    def to_dict(self) -> dict[str, object]:
+        return {
+            "passed": self.passed,
+            "baseline_path": self.baseline_path,
+            "candidate_path": self.candidate_path,
+            "diff_items": list(self.diff_items),
+            "replay_mismatches": list(self.replay_mismatches),
+        }
+
     def failure_message(self) -> str:
         lines = ["AgentCI regression check failed"]
         if self.baseline_path or self.candidate_path:

@@ -43,6 +43,13 @@ class FlakyField:
     values: list[str]
     occurrences: dict[str, int] = field(default_factory=dict)
 
+    def to_dict(self) -> dict[str, object]:
+        return {
+            "name": self.name,
+            "values": list(self.values),
+            "occurrences": dict(self.occurrences),
+        }
+
 
 @dataclass
 class FlakyReport:
@@ -52,6 +59,13 @@ class FlakyReport:
     @property
     def is_stable(self) -> bool:
         return not self.unstable_fields
+
+    def to_dict(self) -> dict[str, object]:
+        return {
+            "episode_count": self.episode_count,
+            "is_stable": self.is_stable,
+            "unstable_fields": [field.to_dict() for field in self.unstable_fields],
+        }
 
 
 def analyze_flakiness(episodes: list[Episode]) -> FlakyReport:
