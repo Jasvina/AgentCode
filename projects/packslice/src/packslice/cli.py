@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import argparse
+import json
 from pathlib import Path
 import sys
 
@@ -13,6 +14,14 @@ def _positive_int(value: str) -> int:
     if parsed <= 0:
         raise argparse.ArgumentTypeError("value must be > 0")
     return parsed
+
+
+def _print_json(data: dict[str, object]) -> None:
+    print(json.dumps(data, indent=2, sort_keys=True, ensure_ascii=False))
+
+
+def _add_json_flag(parser: argparse.ArgumentParser) -> None:
+    parser.add_argument("--json", action="store_true", help="print machine-readable JSON output")
 
 
 def _cmd_split(args: argparse.Namespace) -> int:
@@ -28,6 +37,9 @@ def _cmd_split(args: argparse.Namespace) -> int:
         chronological=args.chronological,
         order_by=args.order_by,
     )
+    if args.json:
+        _print_json(summary)
+        return 0
     print(f"Wrote split pack to {args.output}")
     print(summarize_splits(summary))
     return 0
@@ -35,6 +47,9 @@ def _cmd_split(args: argparse.Namespace) -> int:
 
 def _cmd_summarize(args: argparse.Namespace) -> int:
     payload = load_summary(args.path)
+    if args.json:
+        _print_json(payload)
+        return 0
     print(summarize_splits(payload))
     return 0
 
@@ -62,10 +77,12 @@ def build_parser() -> argparse.ArgumentParser:
     split.add_argument("--train-ratio", type=_positive_int, default=70)
     split.add_argument("--eval-ratio", type=_positive_int, default=15)
     split.add_argument("--test-ratio", type=_positive_int, default=15)
+    _add_json_flag(split)
     split.set_defaults(func=_cmd_split)
 
     summarize = subparsers.add_parser("summarize", help="summarize an existing split output")
     summarize.add_argument("path")
+    _add_json_flag(summarize)
     summarize.set_defaults(func=_cmd_summarize)
 
     markdown = subparsers.add_parser("markdown", help="render a markdown report for an existing split output")

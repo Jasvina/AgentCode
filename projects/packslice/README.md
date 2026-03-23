@@ -36,6 +36,7 @@ packslice split examples/sample_pack examples/split_demo --group-by signature --
 packslice summarize examples/split_demo
 packslice markdown examples/split_demo examples/split_demo/REPORT.md
 packslice split examples/sample_pack examples/failure_only --group-by signature --failure-only --chronological
+packslice summarize examples/split_demo --json
 ```
 
 ## Example output
@@ -48,6 +49,12 @@ Splits:
 - train: 2 cases
 - eval: 2 cases
 - test: 2 cases
+
+$ packslice summarize examples/split_demo --json
+{
+  "group_by": "signature",
+  "total_cases": 6
+}
 ```
 
 ## CLI
@@ -56,8 +63,11 @@ Splits:
 packslice split path/to/tracepack path/to/output_dir --group-by signature --include-label status:failure
 packslice split path/to/tracepack path/to/output_dir --group-by signature --chronological --order-by source_path
 packslice summarize path/to/output_dir
+packslice split path/to/tracepack path/to/output_dir --json
 packslice markdown path/to/output_dir path/to/report.md
 ```
+
+Both `split` and `summarize` support `--json` for CI pipelines and scripted dataset workflows.
 
 ## Output layout
 
