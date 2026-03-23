@@ -42,6 +42,7 @@ failmap issue-bundle-summary examples/bundle/bundle.json
 failmap trend examples/trends.json examples/baseline_clusters.json examples/candidate_clusters.json examples/release3_clusters.json
 failmap trend-summary examples/trends.json
 failmap trend-markdown examples/trends.json examples/trends.md
+failmap summarize examples/clusters.json --json
 ```
 
 ## Example output
@@ -53,6 +54,13 @@ By priority:
 - P0: 2
 By owner:
 - tooling: 2
+
+$ failmap summarize examples/clusters.json --json
+{
+  "case_count": 3,
+  "cluster_count": 2,
+  "format": "failmap-v1"
+}
 ```
 
 Example metadata emitted into each issue draft:
@@ -110,7 +118,10 @@ failmap issue-bundle-summary path/to/bundle.json
 failmap trend path/to/trends.json baseline.json candidate.json release3.json
 failmap trend-summary path/to/trends.json
 failmap trend-markdown path/to/trends.json path/to/report.md
+failmap compare-summary path/to/compare.json --json
 ```
+
+All summary-style commands support `--json`, and write commands like `cluster`, `compare`, `issue-drafts`, `issue-bundle`, and `trend` can also emit machine-readable output metadata.
 
 ## Cluster fields
 

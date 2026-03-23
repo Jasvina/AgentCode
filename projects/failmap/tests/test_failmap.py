@@ -3,8 +3,11 @@ from __future__ import annotations
 import json
 import tempfile
 import unittest
+from contextlib import redirect_stdout
+from io import StringIO
 from pathlib import Path
 
+from failmap.cli import main as cli_main
 from failmap.cluster import build_clusters
 from failmap.compare import compare_cluster_files
 from failmap.issues import build_issue_bundle, generate_issue_drafts
@@ -300,6 +303,107 @@ class FailMapTests(unittest.TestCase):
             self.assertIn("Snapshots: 3", summary)
             self.assertIn("# FailMap Trend Report", markdown)
             self.assertIn("failure:model_call:planner", markdown)
+
+    def test_summarize_cli_can_emit_json(self):
+        with tempfile.TemporaryDirectory() as tmpdir:
+            root = Path(tmpdir)
+            self._write_pack(root)
+            clusters_path = root / "clusters.json"
+            write_json(clusters_path, build_clusters(root))
+            output = StringIO()
+            with redirect_stdout(output):
+                code = cli_main(["summarize", str(clusters_path), "--json"])
+        payload = json.loads(output.getvalue())
+        self.assertEqual(code, 0)
+        self.assertEqual(payload["cluster_count"], 2)
+        self.assertEqual(payload["case_count"], 3)
+
+    def test_compare_summary_cli_can_emit_json(self):
+        with tempfile.TemporaryDirectory() as tmpdir:
+            root = Path(tmpdir)
+            baseline_root = root / "baseline"
+            candidate_root = root / "candidate"
+            self._write_pack(baseline_root)
+            self._write_pack(candidate_root)
+            baseline_path = root / "baseline.json"
+            candidate_path = root / "candidate.json"
+            write_json(baseline_path, build_clusters(baseline_root))
+            candidate_payload = build_clusters(candidate_root)
+            candidate_payload["clusters"][0]["case_count"] = 3
+            write_json(candidate_path, candidate_payload)
+            compare_path = root / "compare.json"
+            write_json(compare_path, compare_cluster_files(baseline_path, candidate_path))
+            output = StringIO()
+            with redirect_stdout(output):
+                code = cli_main(["compare-summary", str(compare_path), "--json"])
+        payload = json.loads(output.getvalue())
+        self.assertEqual(code, 0)
+        self.assertEqual(payload["summary"]["growing"], 1)
+
+    def test_issue_bundle_summary_cli_can_emit_json(self):
+        with tempfile.TemporaryDirectory() as tmpdir:
+            root = Path(tmpdir)
+            issues_dir = root / "issues"
+            issues_dir.mkdir(parents=True, exist_ok=True)
+            manifest = {
+                "format": "failmap-issues-v1",
+                "source_compare": "compare.json",
+                "draft_count": 1,
+                "drafts": [
+                    {
+                        "file": "001-new-tool.md",
+                        "title": "[FailMap] new: failure:tool_call:db_lookup",
+                        "status": "new",
+                        "signature": "failure:tool_call:db_lookup",
+                        "priority": "P1",
+                        "suggested_owner": "tooling",
+                        "labels": ["failmap", "status:new", "priority:P1"],
+                    }
+                ],
+            }
+            write_json(issues_dir / "manifest.json", manifest)
+            bundle_dir = root / "bundle"
+            build_issue_bundle(issues_dir, bundle_dir)
+            output = StringIO()
+            with redirect_stdout(output):
+                code = cli_main(["issue-bundle-summary", str(bundle_dir / "bundle.json"), "--json"])
+        payload = json.loads(output.getvalue())
+        self.assertEqual(code, 0)
+        self.assertEqual(payload["draft_count"], 1)
+        self.assertEqual(payload["owner_counts"]["tooling"], 1)
+
+    def test_trend_summary_cli_can_emit_json(self):
+        with tempfile.TemporaryDirectory() as tmpdir:
+            root = Path(tmpdir)
+            release_a = root / "release-a.json"
+            release_b = root / "release-b.json"
+            write_json(
+                release_a,
+                {
+                    "format": "failmap-v1",
+                    "case_count": 1,
+                    "cluster_count": 1,
+                    "clusters": [{"signature": "failure:tool_call:web_search", "case_count": 1}],
+                },
+            )
+            write_json(
+                release_b,
+                {
+                    "format": "failmap-v1",
+                    "case_count": 2,
+                    "cluster_count": 1,
+                    "clusters": [{"signature": "failure:tool_call:web_search", "case_count": 2}],
+                },
+            )
+            trends_path = root / "trends.json"
+            write_json(trends_path, build_trend_report([release_a, release_b]))
+            output = StringIO()
+            with redirect_stdout(output):
+                code = cli_main(["trend-summary", str(trends_path), "--json"])
+        payload = json.loads(output.getvalue())
+        self.assertEqual(code, 0)
+        self.assertEqual(payload["snapshot_count"], 2)
+        self.assertEqual(payload["summary"]["growing_in_latest"], 1)
 
 
 if __name__ == "__main__":
