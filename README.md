@@ -117,6 +117,12 @@ packslice/
 
 That makes the repo feel less like four isolated READMEs and more like one coherent toolchain.
 
+Here is a visual snapshot of that terminal-style demo flow:
+
+<p align="center">
+  <img src="docs/assets/agentcode-demo-terminal.svg" alt="AgentCode quick demo output" width="100%" />
+</p>
+
 ## Monorepo structure
 
 ```text
