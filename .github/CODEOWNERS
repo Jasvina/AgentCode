@@ -1,0 +1,18 @@
+# Default owner for the repository
+* @Jasvina
+
+# Root collaboration and automation surfaces
+/.github/ @Jasvina
+/README.md @Jasvina
+/ROADMAP.md @Jasvina
+/CONTRIBUTING.md @Jasvina
+/SECURITY.md @Jasvina
+/SUPPORT.md @Jasvina
+/scripts/ @Jasvina
+/docs/ @Jasvina
+
+# Tool ownership
+/projects/agentci/ @Jasvina
+/projects/tracepack/ @Jasvina
+/projects/failmap/ @Jasvina
+/projects/packslice/ @Jasvina
