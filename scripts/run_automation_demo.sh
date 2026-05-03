@@ -3,7 +3,7 @@ set -euo pipefail
 
 ROOT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 TIMESTAMP="$(date +%Y%m%d-%H%M%S)"
-OUTPUT_DIR="${1:-${TMPDIR:-/tmp}/agentevalkit-automation-demo-${TIMESTAMP}}"
+OUTPUT_DIR="${1:-${TMPDIR:-/tmp}/agentreliabilitykit-automation-demo-${TIMESTAMP}}"
 
 mkdir -p "$OUTPUT_DIR"
 
@@ -90,7 +90,7 @@ failmap_cluster = load_json("failmap-cluster.json")
 packslice_summary = load_json("packslice-summary.json")
 
 manifest = {
-    "format": "agentevalkit-demo-v1",
+    "format": "agentreliabilitykit-demo-v1",
     "generated_at": datetime.now(timezone.utc).isoformat(),
     "artifact_root": str(out),
     "toolchain": ["AgentCI", "TracePack", "FailMap", "PackSlice"],

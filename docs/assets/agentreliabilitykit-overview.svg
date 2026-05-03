@@ -1,5 +1,5 @@
 <svg width="1280" height="760" viewBox="0 0 1280 760" fill="none" xmlns="http://www.w3.org/2000/svg" role="img" aria-labelledby="title desc">
-  <title id="title">AgentEvalKit architecture overview</title>
+  <title id="title">AgentReliabilityKit architecture overview</title>
   <desc id="desc">A pipeline diagram showing AgentCI, TracePack, FailMap, and PackSlice connected by portable JSON artifacts and CI automation.</desc>
   <defs>
     <linearGradient id="bg" x1="0" y1="0" x2="1280" y2="760" gradientUnits="userSpaceOnUse">
@@ -37,7 +37,7 @@
   <rect width="1280" height="760" rx="32" fill="url(#bg)"/>
 
   <rect x="48" y="40" width="1184" height="108" rx="24" fill="url(#hero)" filter="url(#shadow)"/>
-  <text x="88" y="88" fill="white" font-family="Inter, Arial, sans-serif" font-size="34" font-weight="700">AgentEvalKit</text>
+  <text x="88" y="88" fill="white" font-family="Inter, Arial, sans-serif" font-size="34" font-weight="700">AgentReliabilityKit</text>
   <text x="88" y="124" fill="#DCEEFF" font-family="Inter, Arial, sans-serif" font-size="18">
     Reproducibility, regression testing, failure clustering, and eval-pack preparation for tool-using LLM agents
   </text>

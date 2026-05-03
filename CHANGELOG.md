@@ -1,6 +1,6 @@
 # Changelog
 
-All notable changes to `AgentEvalKit` will be documented in this file.
+All notable changes to `AgentReliabilityKit` will be documented in this file.
 
 The project currently tracks a single public line of development on `main`, with GitHub releases used to mark meaningful public milestones in the repo's evolution.
 
@@ -10,7 +10,7 @@ Initial public toolkit release for the repo in its current form.
 
 ### Added
 
-- clarified monorepo positioning as `AgentEvalKit`
+- clarified monorepo positioning as `AgentReliabilityKit`
 - root automation demo with machine-readable `manifest.json`
 - GitHub-facing repository docs and community health files
 - issue templates, PR template, roadmap, labels, Discussions, funding metadata, and code ownership metadata

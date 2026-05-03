@@ -1,6 +1,6 @@
 # Automation Guide
 
-This guide shows how to automate the full `AgentEvalKit` toolchain in a way that works for local scripts, CI jobs, and later dashboards:
+This guide shows how to automate the full `AgentReliabilityKit` toolchain in a way that works for local scripts, CI jobs, and later dashboards:
 
 ```text
 AgentCI   -> record or validate episodes
@@ -35,7 +35,7 @@ For automation, `PYTHONPATH=src python -m ...` is often the simplest because it 
 
 Examples in this doc assume:
 
-- repo root: `AgentEvalKit/`
+- repo root: `AgentReliabilityKit/`
 - Python 3.10+
 - commands run from the relevant project directory, or with explicit `cd`
 
@@ -58,14 +58,14 @@ It writes a timestamped output directory under `/tmp` by default and produces:
 To write into a fixed directory instead:
 
 ```bash
-./scripts/run_automation_demo.sh /tmp/agentevalkit-demo
+./scripts/run_automation_demo.sh /tmp/agentreliabilitykit-demo
 ```
 
 ### Root demo manifest contract
 
 The root `manifest.json` produced by `./scripts/run_automation_demo.sh` is intended to be the stable entrypoint for downstream automation. Its current contract is:
 
-- `format`: the top-level manifest format identifier, currently `agentevalkit-demo-v1`
+- `format`: the top-level manifest format identifier, currently `agentreliabilitykit-demo-v1`
 - `generated_at`: UTC timestamp for the demo run
 - `artifact_root`: absolute path to the generated demo directory
 - `toolchain`: ordered list of the tool names included in the run
@@ -134,18 +134,18 @@ PYTHONPATH=src python3 -m tracepack.cli scan \
 
 PYTHONPATH=src python3 -m tracepack.cli build \
   examples/source_episodes \
-  /tmp/agentevalkit-demo/tracepack-pack \
+  /tmp/agentreliabilitykit-demo/tracepack-pack \
   --only-failures \
   --redact \
   --max-per-signature 2 \
   --json
 
 PYTHONPATH=src python3 -m tracepack.cli inspect \
-  /tmp/agentevalkit-demo/tracepack-pack \
+  /tmp/agentreliabilitykit-demo/tracepack-pack \
   --json
 
 PYTHONPATH=src python3 -m tracepack.cli validate \
-  /tmp/agentevalkit-demo/tracepack-pack \
+  /tmp/agentreliabilitykit-demo/tracepack-pack \
   --json
 ```
 
@@ -170,12 +170,12 @@ FailMap reads the TracePack output and turns it into a triage-oriented snapshot.
 cd projects/failmap
 
 PYTHONPATH=src python3 -m failmap.cli cluster \
-  /tmp/agentevalkit-demo/tracepack-pack \
-  /tmp/agentevalkit-demo/failmap-clusters.json \
+  /tmp/agentreliabilitykit-demo/tracepack-pack \
+  /tmp/agentreliabilitykit-demo/failmap-clusters.json \
   --json
 
 PYTHONPATH=src python3 -m failmap.cli summarize \
-  /tmp/agentevalkit-demo/failmap-clusters.json \
+  /tmp/agentreliabilitykit-demo/failmap-clusters.json \
   --json
 ```
 
@@ -213,8 +213,8 @@ PackSlice works directly on the TracePack artifact, so you can prepare datasets 
 cd projects/packslice
 
 PYTHONPATH=src python3 -m packslice.cli split \
-  /tmp/agentevalkit-demo/tracepack-pack \
-  /tmp/agentevalkit-demo/packslice \
+  /tmp/agentreliabilitykit-demo/tracepack-pack \
+  /tmp/agentreliabilitykit-demo/packslice \
   --group-by signature \
   --train-ratio 70 \
   --eval-ratio 15 \
@@ -222,7 +222,7 @@ PYTHONPATH=src python3 -m packslice.cli split \
   --json
 
 PYTHONPATH=src python3 -m packslice.cli summarize \
-  /tmp/agentevalkit-demo/packslice \
+  /tmp/agentreliabilitykit-demo/packslice \
   --json
 ```
 
@@ -264,13 +264,13 @@ You do not need `jq`; plain Python works everywhere GitHub Actions already has P
 agentci summarize examples/openai_agents_episode.json --json > summary.json
 python -c "import json; data=json.load(open('summary.json')); assert data['tool_calls'] >= 1"
 
-tracepack inspect /tmp/agentevalkit-demo/tracepack-pack --json > inspect.json
+tracepack inspect /tmp/agentreliabilitykit-demo/tracepack-pack --json > inspect.json
 python -c "import json; data=json.load(open('inspect.json')); assert data['case_count'] >= 1"
 
 failmap compare-summary compare.json --json > compare-summary.json
 python -c "import json; data=json.load(open('compare-summary.json')); assert 'summary' in data"
 
-packslice summarize /tmp/agentevalkit-demo/packslice --json > split-summary.json
+packslice summarize /tmp/agentreliabilitykit-demo/packslice --json > split-summary.json
 python -c "import json; data=json.load(open('split-summary.json')); assert len(data['splits']) == 3"
 ```
 

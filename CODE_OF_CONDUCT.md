@@ -2,7 +2,7 @@
 
 ## Our Commitment
 
-We want `AgentEvalKit` to be a useful, welcoming open-source project for people working on agent evals, infrastructure, reliability, and research tooling.
+We want `AgentReliabilityKit` to be a useful, welcoming open-source project for people working on agent evals, infrastructure, reliability, and research tooling.
 
 Contributors, maintainers, and community members are expected to keep interactions respectful, constructive, and focused on improving the work.
 

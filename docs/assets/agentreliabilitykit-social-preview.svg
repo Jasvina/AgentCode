@@ -1,6 +1,6 @@
 <svg width="1280" height="640" viewBox="0 0 1280 640" fill="none" xmlns="http://www.w3.org/2000/svg" role="img" aria-labelledby="title desc">
-  <title id="title">AgentEvalKit social preview</title>
-  <desc id="desc">A GitHub social preview card for AgentEvalKit showing an eval loop, starter status chips, and the four-tool artifact workflow.</desc>
+  <title id="title">AgentReliabilityKit social preview</title>
+  <desc id="desc">A GitHub social preview card for AgentReliabilityKit showing an eval loop, starter status chips, and the four-tool artifact workflow.</desc>
   <defs>
     <linearGradient id="bg" x1="0" y1="0" x2="1280" y2="640" gradientUnits="userSpaceOnUse">
       <stop stop-color="#0B1220"/>

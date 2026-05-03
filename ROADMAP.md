@@ -1,6 +1,6 @@
 # Roadmap
 
-`AgentEvalKit` is a toolkit for the agent reliability loop:
+`AgentReliabilityKit` is a toolkit for the agent reliability loop:
 
 1. capture real runs
 2. replay and diff them

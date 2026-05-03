@@ -1,12 +1,12 @@
-# AgentEvalKit
+# AgentReliabilityKit
 
-[![CI](https://github.com/Jasvina/AgentEvalKit/actions/workflows/ci.yml/badge.svg)](https://github.com/Jasvina/AgentEvalKit/actions/workflows/ci.yml)
-[![License](https://img.shields.io/github/license/Jasvina/AgentEvalKit)](LICENSE)
-[![Monorepo](https://img.shields.io/badge/layout-agent%20tooling%20monorepo-0a7bbb)](https://github.com/Jasvina/AgentEvalKit)
+[![CI](https://github.com/Jasvina/AgentReliabilityKit/actions/workflows/ci.yml/badge.svg)](https://github.com/Jasvina/AgentReliabilityKit/actions/workflows/ci.yml)
+[![License](https://img.shields.io/github/license/Jasvina/AgentReliabilityKit)](LICENSE)
+[![Monorepo](https://img.shields.io/badge/layout-agent%20tooling%20monorepo-0a7bbb)](https://github.com/Jasvina/AgentReliabilityKit)
 
 Open-source tooling for agent evals, regression testing, trace packaging, failure clustering, and dataset slicing.
 
-`AgentEvalKit` is a focused monorepo for a specific gap in the LLM agent stack: teams can build agents, but still struggle to replay failures, turn real traces into reusable eval assets, cluster recurring failure modes, and produce stable train/eval/test slices from the same evidence.
+`AgentReliabilityKit` is a focused monorepo for a specific gap in the LLM agent stack: teams can build agents, but still struggle to replay failures, turn real traces into reusable eval assets, cluster recurring failure modes, and produce stable train/eval/test slices from the same evidence.
 
 ## Why this exists
 
@@ -20,7 +20,7 @@ This repo is built around that loop:
 4. cluster repeated failures across runs or releases
 5. slice the same artifact into reproducible datasets
 
-That makes `AgentEvalKit` closer to an eval-and-reliability toolkit than a general agent framework.
+That makes `AgentReliabilityKit` closer to an eval-and-reliability toolkit than a general agent framework.
 
 ## What you get
 
@@ -33,7 +33,7 @@ That makes `AgentEvalKit` closer to an eval-and-reliability toolkit than a gener
 ## Toolchain at a glance
 
 <p align="center">
-  <img src="docs/assets/agentevalkit-overview.svg" alt="AgentEvalKit architecture overview" width="100%" />
+  <img src="docs/assets/agentreliabilitykit-overview.svg" alt="AgentReliabilityKit architecture overview" width="100%" />
 </p>
 
 ```text
@@ -46,13 +46,13 @@ PackSlice -> split packs into balanced train/eval/test datasets
 ## What the demo produces
 
 <p align="center">
-  <img src="docs/assets/agentevalkit-demo-terminal.svg" alt="AgentEvalKit terminal-style demo output" width="100%" />
+  <img src="docs/assets/agentreliabilitykit-demo-terminal.svg" alt="AgentReliabilityKit terminal-style demo output" width="100%" />
 </p>
 
 Run the end-to-end repo demo with:
 
 ```bash
-./scripts/run_automation_demo.sh /tmp/agentevalkit-demo
+./scripts/run_automation_demo.sh /tmp/agentreliabilitykit-demo
 ```
 
 The output is intentionally machine-readable. A successful run gives you a root `manifest.json` plus per-tool artifacts:
@@ -183,7 +183,7 @@ The most useful agent infra repos are usually:
 3. demoable in a few minutes
 4. useful to both researchers and production teams
 
-`AgentEvalKit` is built around that rule.
+`AgentReliabilityKit` is built around that rule.
 
 ## Monorepo structure
 
@@ -207,7 +207,7 @@ projects/
 - public roadmap: `ROADMAP.md`
 - changelog: `CHANGELOG.md`
 - discussions: GitHub Discussions
-- social preview source: `docs/assets/agentevalkit-social-preview.svg`
+- social preview source: `docs/assets/agentreliabilitykit-social-preview.svg`
 
 ## Roadmap
 

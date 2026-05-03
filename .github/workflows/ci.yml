@@ -128,14 +128,14 @@ jobs:
         with:
           python-version: "3.11"
       - name: Run monorepo automation demo
-        run: ./scripts/run_automation_demo.sh /tmp/agentevalkit-automation-demo
+        run: ./scripts/run_automation_demo.sh /tmp/agentreliabilitykit-automation-demo
       - name: Validate automation outputs
         run: |
           python - <<'PY'
           import json
           from pathlib import Path
 
-          out = Path("/tmp/agentevalkit-automation-demo")
+          out = Path("/tmp/agentreliabilitykit-automation-demo")
           assert (out / "manifest.json").exists()
           assert (out / "agentci-summary.json").exists()
           assert (out / "agentci-regression.json").exists()
@@ -144,7 +144,7 @@ jobs:
           assert (out / "packslice" / "summary.json").exists()
 
           demo_manifest = json.loads((out / "manifest.json").read_text())
-          assert demo_manifest["format"] == "agentevalkit-demo-v1"
+          assert demo_manifest["format"] == "agentreliabilitykit-demo-v1"
           assert demo_manifest["summary"]["agentci"]["regression_passed"] is True
 
           agentci_summary = json.loads((out / "agentci-summary.json").read_text())
@@ -167,5 +167,5 @@ jobs:
       - name: Upload automation demo artifacts
         uses: actions/upload-artifact@v4
         with:
-          name: agentevalkit-automation-demo
-          path: /tmp/agentevalkit-automation-demo
+          name: agentreliabilitykit-automation-demo
+          path: /tmp/agentreliabilitykit-automation-demo

@@ -1,6 +1,6 @@
 <svg width="1280" height="900" viewBox="0 0 1280 900" fill="none" xmlns="http://www.w3.org/2000/svg" role="img" aria-labelledby="title desc">
-  <title id="title">AgentEvalKit quick demo output</title>
-  <desc id="desc">A terminal-style screenshot showing the AgentEvalKit automation demo command, generated artifacts, and summary metrics from AgentCI, TracePack, FailMap, and PackSlice.</desc>
+  <title id="title">AgentReliabilityKit quick demo output</title>
+  <desc id="desc">A terminal-style screenshot showing the AgentReliabilityKit automation demo command, generated artifacts, and summary metrics from AgentCI, TracePack, FailMap, and PackSlice.</desc>
   <defs>
     <linearGradient id="bg" x1="0" y1="0" x2="1280" y2="900" gradientUnits="userSpaceOnUse">
       <stop stop-color="#0B1220"/>
@@ -26,18 +26,18 @@
   <circle cx="95" cy="83" r="10" fill="#FF5F57"/>
   <circle cx="127" cy="83" r="10" fill="#FEBC2E"/>
   <circle cx="159" cy="83" r="10" fill="#28C840"/>
-  <text x="550" y="90" fill="#DDE7F5" font-family="Inter, Arial, sans-serif" font-size="22" font-weight="600">AgentEvalKit quick demo</text>
+  <text x="550" y="90" fill="#DDE7F5" font-family="Inter, Arial, sans-serif" font-size="22" font-weight="600">AgentReliabilityKit quick demo</text>
 
   <rect x="92" y="146" width="1096" height="82" rx="18" fill="#0A1322" stroke="#23324B"/>
   <text x="118" y="182" fill="#8BB4FF" font-family="Menlo, Consolas, monospace" font-size="21">$</text>
-  <text x="144" y="182" fill="#E8EEF8" font-family="Menlo, Consolas, monospace" font-size="21">./scripts/run_automation_demo.sh /tmp/agentevalkit-demo</text>
+  <text x="144" y="182" fill="#E8EEF8" font-family="Menlo, Consolas, monospace" font-size="21">./scripts/run_automation_demo.sh /tmp/agentreliabilitykit-demo</text>
   <text x="118" y="212" fill="#8FA6BF" font-family="Inter, Arial, sans-serif" font-size="16">Runs the whole monorepo chain and emits CI-friendly artifacts without scraping human logs.</text>
 
   <text x="92" y="278" fill="#EEF5FF" font-family="Inter, Arial, sans-serif" font-size="28" font-weight="700">Generated outputs</text>
   <text x="92" y="306" fill="#8FA6BF" font-family="Inter, Arial, sans-serif" font-size="16">These are the same outputs the root GitHub Actions workflow validates and uploads as artifacts.</text>
 
   <rect x="92" y="334" width="512" height="234" rx="22" fill="#0A1322" stroke="#22324B"/>
-  <text x="122" y="376" fill="#9CC7FF" font-family="Menlo, Consolas, monospace" font-size="18">/tmp/agentevalkit-demo</text>
+  <text x="122" y="376" fill="#9CC7FF" font-family="Menlo, Consolas, monospace" font-size="18">/tmp/agentreliabilitykit-demo</text>
   <text x="122" y="412" fill="#D6E2F2" font-family="Menlo, Consolas, monospace" font-size="17">├── agentci-summary.json</text>
   <text x="122" y="442" fill="#D6E2F2" font-family="Menlo, Consolas, monospace" font-size="17">├── agentci-regression.json</text>
   <text x="122" y="472" fill="#D6E2F2" font-family="Menlo, Consolas, monospace" font-size="17">├── tracepack-pack/manifest.json</text>

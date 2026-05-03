@@ -27,6 +27,6 @@ Describe the smallest useful feature that would address it.
 
 What file, output, or CLI shape would this add or change?
 
-## Why this belongs in AgentEvalKit
+## Why this belongs in AgentReliabilityKit
 
 Explain why this strengthens the eval / regression / failure-analysis story rather than adding a generic demo.

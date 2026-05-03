@@ -2,7 +2,7 @@
 
 ## Scope
 
-`AgentEvalKit` is a public toolkit for agent eval, regression testing, trace packaging, failure clustering, and dataset slicing. Security reports are especially helpful when they involve:
+`AgentReliabilityKit` is a public toolkit for agent eval, regression testing, trace packaging, failure clustering, and dataset slicing. Security reports are especially helpful when they involve:
 
 - secret leakage or incomplete redaction in `TracePack`
 - unsafe artifact handling in `AgentCI`, `FailMap`, or `PackSlice`
