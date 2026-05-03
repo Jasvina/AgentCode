@@ -177,6 +177,7 @@ def split_pack(
             {
                 "name": split_name,
                 "case_count": len(cases),
+                "groups": _summarize_group_counts(cases, group_by),
                 "signatures": _summarize_signatures(cases),
             }
         )
@@ -193,6 +194,7 @@ def split_pack(
         },
         "ratios": {"train": ratios[0], "eval": ratios[1], "test": ratios[2]},
         "total_cases": len(filtered_cases),
+        "balance": _build_balance_summary(summary_splits),
         "splits": summary_splits,
     }
     write_json(out_root / "summary.json", summary)
@@ -207,3 +209,25 @@ def _summarize_signatures(cases: list[dict[str, Any]]) -> list[dict[str, Any]]:
         {"signature": signature, "count": count}
         for signature, count in sorted(counts.items(), key=lambda item: (-item[1], item[0]))
     ]
+
+
+def _summarize_group_counts(cases: list[dict[str, Any]], group_by: str) -> list[dict[str, Any]]:
+    counts: dict[str, int] = defaultdict(int)
+    for case in cases:
+        counts[str(case.get(group_by) or "unknown")] += 1
+    return [
+        {"name": name, "count": count}
+        for name, count in sorted(counts.items(), key=lambda item: (-item[1], item[0]))
+    ]
+
+
+def _build_balance_summary(summary_splits: list[dict[str, Any]]) -> dict[str, Any]:
+    counts = {str(split["name"]): int(split["case_count"]) for split in summary_splits}
+    values = list(counts.values())
+    empty_splits = [name for name, count in counts.items() if count == 0]
+    status = "empty" if empty_splits else "even" if len(set(values)) <= 1 else "uneven"
+    return {
+        "status": status,
+        "case_counts": counts,
+        "empty_splits": empty_splits,
+    }

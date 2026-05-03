@@ -141,6 +141,42 @@ class PackSliceTests(unittest.TestCase):
                 ["assert-b", "billing-b"],
             )
 
+
+    def test_summarize_splits_highlights_balance_note(self):
+        payload = {
+            "total_cases": 6,
+            "group_by": "signature",
+            "order_by": "episode_id",
+            "chronological": False,
+            "balance": {"status": "even", "case_counts": {"train": 2, "eval": 2, "test": 2}, "empty_splits": []},
+            "splits": [
+                {"name": "train", "case_count": 2},
+                {"name": "eval", "case_count": 2},
+                {"name": "test", "case_count": 2},
+            ],
+        }
+        summary = summarize_splits(payload)
+        self.assertIn("Split balance:", summary)
+        self.assertIn("- train: 2", summary)
+
+    def test_markdown_splits_includes_balance_note(self):
+        payload = {
+            "total_cases": 6,
+            "group_by": "signature",
+            "order_by": "episode_id",
+            "chronological": False,
+            "filters": {"success_mode": "all", "include_labels": []},
+            "balance": {"status": "uneven", "case_counts": {"train": 4, "eval": 1, "test": 1}, "empty_splits": []},
+            "splits": [
+                {"name": "train", "case_count": 4, "signatures": []},
+                {"name": "eval", "case_count": 1, "signatures": []},
+                {"name": "test", "case_count": 1, "signatures": []},
+            ],
+        }
+        report = markdown_splits(payload)
+        self.assertIn("Balance note:", report)
+        self.assertIn("uneven", report)
+
     def test_split_cli_can_emit_json(self):
         with tempfile.TemporaryDirectory() as tmpdir:
             root = Path(tmpdir) / "sample_pack"

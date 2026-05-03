@@ -24,6 +24,7 @@ PackSlice focuses on that layer.
 - copies referenced case files into each split directory
 - writes per-split `manifest.json` files plus a top-level `summary.json`
 - prints compact split summaries for CI logs
+- surfaces a short balance note when split counts are even or skewed
 - biases toward split coverage so small signature groups still reach eval and test
 
 ## Quick start
@@ -45,13 +46,29 @@ packslice summarize examples/split_demo --json
 $ packslice summarize examples/split_demo
 Total cases: 6
 Group by: signature
+Order by: episode_id
+Chronological: False
 Splits:
 - train: 2 cases
 - eval: 2 cases
 - test: 2 cases
+Balance note: Split balance looks even across train, eval, and test.
+Split balance:
+- train: 2
+- eval: 2
+- test: 2
 
 $ packslice summarize examples/split_demo --json
 {
+  "balance": {
+    "case_counts": {
+      "eval": 2,
+      "test": 2,
+      "train": 2
+    },
+    "empty_splits": [],
+    "status": "even"
+  },
   "group_by": "signature",
   "total_cases": 6
 }
@@ -63,8 +80,8 @@ $ packslice summarize examples/split_demo --json
 packslice split path/to/tracepack path/to/output_dir --group-by signature --include-label status:failure
 packslice split path/to/tracepack path/to/output_dir --group-by signature --chronological --order-by source_path
 packslice summarize path/to/output_dir
-packslice split path/to/tracepack path/to/output_dir --json
 packslice markdown path/to/output_dir path/to/report.md
+packslice split path/to/tracepack path/to/output_dir --json
 ```
 
 Both `split` and `summarize` support `--json` for CI pipelines and scripted dataset workflows.

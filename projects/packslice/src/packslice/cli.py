@@ -45,12 +45,27 @@ def _cmd_split(args: argparse.Namespace) -> int:
     return 0
 
 
+def _split_balance_counts(payload: dict[str, object]) -> dict[str, int]:
+    balance = payload.get("balance", {})
+    if not isinstance(balance, dict):
+        return {}
+    case_counts = balance.get("case_counts", {})
+    if not isinstance(case_counts, dict):
+        return {}
+    return {str(name): int(count) for name, count in case_counts.items()}
+
+
 def _cmd_summarize(args: argparse.Namespace) -> int:
     payload = load_summary(args.path)
     if args.json:
         _print_json(payload)
         return 0
     print(summarize_splits(payload))
+    balance = _split_balance_counts(payload)
+    if balance:
+        print("Split balance:")
+        for split_name, count in balance.items():
+            print(f"- {split_name}: {count}")
     return 0
 
 
