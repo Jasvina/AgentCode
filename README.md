@@ -207,6 +207,7 @@ projects/
 - public roadmap: `ROADMAP.md`
 - changelog: `CHANGELOG.md`
 - discussions: GitHub Discussions
+- social preview source: `docs/assets/agentevalkit-social-preview.svg`
 
 ## Roadmap
 
