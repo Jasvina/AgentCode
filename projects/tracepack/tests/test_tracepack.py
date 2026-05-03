@@ -161,6 +161,60 @@ class TracePackTests(unittest.TestCase):
         self.assertTrue(payload['redacted'])
         self.assertIn('success', payload['signatures'])
 
+
+    def test_validate_cli_passes_for_valid_pack(self):
+        with tempfile.TemporaryDirectory() as tmpdir:
+            root = Path(tmpdir) / 'episodes'
+            root.mkdir()
+            self._make_episode(root / 'a.json', 'episode-a', True)
+            out = Path(tmpdir) / 'pack'
+            build_pack(root, out)
+            output = StringIO()
+            with redirect_stdout(output):
+                code = cli_main(['validate', str(out), '--json'])
+        payload = json.loads(output.getvalue())
+        self.assertEqual(code, 0)
+        self.assertTrue(payload['valid'])
+        self.assertEqual(payload['format'], 'tracepack-v1')
+
+    def test_validate_cli_fails_for_missing_case_file(self):
+        with tempfile.TemporaryDirectory() as tmpdir:
+            root = Path(tmpdir) / 'episodes'
+            root.mkdir()
+            self._make_episode(root / 'a.json', 'episode-a', True)
+            out = Path(tmpdir) / 'pack'
+            build_pack(root, out)
+            manifest_path = out / 'manifest.json'
+            manifest = json.loads(manifest_path.read_text(encoding='utf-8'))
+            case_file = manifest['cases'][0]['file']
+            (out / case_file).unlink()
+            output = StringIO()
+            with redirect_stdout(output):
+                code = cli_main(['validate', str(out), '--json'])
+        payload = json.loads(output.getvalue())
+        self.assertEqual(code, 1)
+        self.assertFalse(payload['valid'])
+        self.assertIn(case_file, payload['missing_case_files'])
+
+    def test_validate_cli_fails_for_case_count_mismatch(self):
+        with tempfile.TemporaryDirectory() as tmpdir:
+            root = Path(tmpdir) / 'episodes'
+            root.mkdir()
+            self._make_episode(root / 'a.json', 'episode-a', True)
+            out = Path(tmpdir) / 'pack'
+            build_pack(root, out)
+            manifest_path = out / 'manifest.json'
+            manifest = json.loads(manifest_path.read_text(encoding='utf-8'))
+            manifest['case_count'] = 99
+            manifest_path.write_text(json.dumps(manifest), encoding='utf-8')
+            output = StringIO()
+            with redirect_stdout(output):
+                code = cli_main(['validate', str(out), '--json'])
+        payload = json.loads(output.getvalue())
+        self.assertEqual(code, 1)
+        self.assertFalse(payload['valid'])
+        self.assertTrue(any('case_count mismatch' in error for error in payload['errors']))
+
     def test_export_jsonl_cli_can_emit_json(self):
         with tempfile.TemporaryDirectory() as tmpdir:
             root = Path(tmpdir) / 'episodes'

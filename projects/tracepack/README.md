@@ -29,6 +29,7 @@ TracePack focuses on that layer.
 - exports chat-style jsonl for fine-tuning and evaluator pipelines
 - can cap repeated signatures to keep packs diverse with `--max-per-signature`
 - supports `--only-failures` for failure-focused packs
+- validates pack structure before downstream tools consume it
 
 ## Quick start
 
@@ -78,12 +79,33 @@ tracepack scan path/to/episodes
 tracepack build path/to/episodes path/to/pack --only-failures --redact
 tracepack build path/to/episodes path/to/pack --only-failures --max-per-signature 3
 tracepack inspect path/to/pack
+tracepack validate path/to/pack
 tracepack export-jsonl path/to/pack path/to/output.jsonl
 tracepack export-chat path/to/pack path/to/chat.jsonl --success-only
 tracepack inspect path/to/pack --json
 ```
 
 Read-only CLI commands also support `--json` for scripting and CI handoffs.
+
+## Pack validation
+
+Use `validate` when you want a read-only contract check before handing a pack to downstream tooling or CI:
+
+```bash
+tracepack validate path/to/pack
+tracepack validate path/to/pack --json
+```
+
+The validator checks:
+
+- `manifest.json` exists and parses
+- the pack format is `tracepack-v1`
+- `case_count` matches the number of listed cases
+- required per-case fields exist
+- referenced case files exist and contain valid JSON
+- `step_count` matches the number of serialized steps
+
+Validation exits non-zero for malformed packs, which makes it suitable for CI gates.
 
 ## Pack layout
 

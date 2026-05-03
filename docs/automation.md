@@ -61,6 +61,34 @@ To write into a fixed directory instead:
 ./scripts/run_automation_demo.sh /tmp/agentevalkit-demo
 ```
 
+### Root demo manifest contract
+
+The root `manifest.json` produced by `./scripts/run_automation_demo.sh` is intended to be the stable entrypoint for downstream automation. Its current contract is:
+
+- `format`: the top-level manifest format identifier, currently `agentevalkit-demo-v1`
+- `generated_at`: UTC timestamp for the demo run
+- `artifact_root`: absolute path to the generated demo directory
+- `toolchain`: ordered list of the tool names included in the run
+- `artifacts`: map of logical artifact names to relative file paths within the demo output directory
+- `summary`: compact per-tool summary values for `agentci`, `tracepack`, `failmap`, and `packslice`
+
+The `artifacts` map currently indexes these logical outputs:
+
+- `agentci_summary` -> `agentci-summary.json`
+- `agentci_regression` -> `agentci-regression.json`
+- `tracepack_scan` -> `tracepack-scan.json`
+- `tracepack_build` -> `tracepack-build.json`
+- `tracepack_inspect` -> `tracepack-inspect.json`
+- `tracepack_pack_manifest` -> `tracepack-pack/manifest.json`
+- `failmap_cluster` -> `failmap-cluster.json`
+- `failmap_clusters` -> `failmap-clusters.json`
+- `failmap_summary` -> `failmap-summary.json`
+- `packslice_split` -> `packslice-split.json`
+- `packslice_summary` -> `packslice-summary.json`
+- `packslice_manifest` -> `packslice/summary.json`
+
+For CI and dashboard consumers, treat `format`, `artifacts`, and the per-tool `summary` blocks as the stable fields to depend on first.
+
 ## Step-by-step pipeline
 
 ### 1. AgentCI: validate or gate compatible episodes
@@ -115,6 +143,10 @@ PYTHONPATH=src python3 -m tracepack.cli build \
 PYTHONPATH=src python3 -m tracepack.cli inspect \
   /tmp/agentevalkit-demo/tracepack-pack \
   --json
+
+PYTHONPATH=src python3 -m tracepack.cli validate \
+  /tmp/agentevalkit-demo/tracepack-pack \
+  --json
 ```
 
 Recommended use:
@@ -122,6 +154,7 @@ Recommended use:
 - run `scan --json` first for preflight counts
 - run `build --json` to create the portable artifact
 - run `inspect --json` to confirm the built pack shape before downstream jobs consume it
+- run `validate --json` to fail fast on malformed pack structure before FailMap or PackSlice reads it
 
 Important fields:
 

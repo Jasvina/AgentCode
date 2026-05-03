@@ -7,6 +7,7 @@ import sys
 
 from .builder import build_pack, export_pack_chat_jsonl, export_pack_jsonl
 from .scanner import scan_directory
+from .validator import validate_pack
 
 
 def _positive_int(value: str) -> int:
@@ -103,6 +104,22 @@ def _cmd_inspect(args: argparse.Namespace) -> int:
     return 0
 
 
+
+
+def _cmd_validate(args: argparse.Namespace) -> int:
+    payload = validate_pack(args.path)
+    if args.json:
+        _print_json(payload)
+        return 0 if payload["valid"] else 1
+    print(f"Valid: {payload['valid']}")
+    print(f"Format: {payload.get('format', 'unknown')}")
+    print(f"Cases: {payload.get('case_count', 0)}")
+    if payload["errors"]:
+        print("Errors:")
+        for error in payload["errors"]:
+            print(f"- {error}")
+    return 0 if payload["valid"] else 1
+
 def _cmd_export_jsonl(args: argparse.Namespace) -> int:
     count = export_pack_jsonl(args.pack, args.output)
     if args.json:
@@ -154,6 +171,12 @@ def build_parser() -> argparse.ArgumentParser:
     inspect_cmd.add_argument("path")
     _add_json_flag(inspect_cmd)
     inspect_cmd.set_defaults(func=_cmd_inspect)
+
+
+    validate = subparsers.add_parser("validate", help="validate a trace pack manifest and case layout")
+    validate.add_argument("path")
+    _add_json_flag(validate)
+    validate.set_defaults(func=_cmd_validate)
 
     export_jsonl = subparsers.add_parser("export-jsonl", help="export a pack manifest to jsonl")
     export_jsonl.add_argument("pack")
