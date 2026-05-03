@@ -33,6 +33,8 @@ When in doubt, optimize for sharper scope. A small contribution that makes one e
 
 ## Before you start
 
+If you are proposing broader direction changes, read `ROADMAP.md` first so suggestions stay aligned with the public scope.
+
 Before writing code, it helps to align on the kind of change you are making:
 
 - for bug fixes, include a failing test or a concrete reproduction if possible

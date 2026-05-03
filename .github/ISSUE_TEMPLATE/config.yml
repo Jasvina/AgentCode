@@ -1,0 +1,11 @@
+blank_issues_enabled: false
+contact_links:
+  - name: Roadmap and project direction
+    url: https://github.com/Jasvina/AgentEvalKit/blob/main/ROADMAP.md
+    about: Read the public roadmap before proposing broad new directions.
+  - name: Discussions
+    url: https://github.com/Jasvina/AgentEvalKit/discussions
+    about: Use Discussions for open-ended questions, ideas, and design conversations.
+  - name: Security reporting
+    url: https://github.com/Jasvina/AgentEvalKit/blob/main/SECURITY.md
+    about: Please report undisclosed security issues privately.

@@ -204,8 +204,12 @@ projects/
 - issue and PR templates: `.github/`
 - security policy: `SECURITY.md`
 - support guidance: `SUPPORT.md`
+- public roadmap: `ROADMAP.md`
+- discussions: GitHub Discussions
 
 ## Roadmap
+
+For the longer view, see `ROADMAP.md`.
 
 - add more `AgentCI` integrations and richer HTML diff reports
 - strengthen `TracePack` redaction policies, labeling workflows, and export formats
