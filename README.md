@@ -205,6 +205,7 @@ projects/
 - security policy: `SECURITY.md`
 - support guidance: `SUPPORT.md`
 - public roadmap: `ROADMAP.md`
+- changelog: `CHANGELOG.md`
 - discussions: GitHub Discussions
 
 ## Roadmap
