@@ -1,6 +1,6 @@
 # Automation Guide
 
-This guide shows how to automate the full `AgentCode` toolchain in a way that works for local scripts, CI jobs, and later dashboards:
+This guide shows how to automate the full `AgentEvalKit` toolchain in a way that works for local scripts, CI jobs, and later dashboards:
 
 ```text
 AgentCI   -> record or validate episodes
@@ -35,7 +35,7 @@ For automation, `PYTHONPATH=src python -m ...` is often the simplest because it 
 
 Examples in this doc assume:
 
-- repo root: `AgentCode/`
+- repo root: `AgentEvalKit/`
 - Python 3.10+
 - commands run from the relevant project directory, or with explicit `cd`
 
@@ -49,6 +49,7 @@ The repo includes a companion script:
 
 It writes a timestamped output directory under `/tmp` by default and produces:
 
+- one root `manifest.json` that indexes the whole run
 - AgentCI JSON summaries
 - a TracePack pack
 - a FailMap cluster snapshot
@@ -57,7 +58,7 @@ It writes a timestamped output directory under `/tmp` by default and produces:
 To write into a fixed directory instead:
 
 ```bash
-./scripts/run_automation_demo.sh /tmp/agentcode-demo
+./scripts/run_automation_demo.sh /tmp/agentevalkit-demo
 ```
 
 ## Step-by-step pipeline
@@ -105,14 +106,14 @@ PYTHONPATH=src python3 -m tracepack.cli scan \
 
 PYTHONPATH=src python3 -m tracepack.cli build \
   examples/source_episodes \
-  /tmp/agentcode-demo/tracepack-pack \
+  /tmp/agentevalkit-demo/tracepack-pack \
   --only-failures \
   --redact \
   --max-per-signature 2 \
   --json
 
 PYTHONPATH=src python3 -m tracepack.cli inspect \
-  /tmp/agentcode-demo/tracepack-pack \
+  /tmp/agentevalkit-demo/tracepack-pack \
   --json
 ```
 
@@ -136,12 +137,12 @@ FailMap reads the TracePack output and turns it into a triage-oriented snapshot.
 cd projects/failmap
 
 PYTHONPATH=src python3 -m failmap.cli cluster \
-  /tmp/agentcode-demo/tracepack-pack \
-  /tmp/agentcode-demo/failmap-clusters.json \
+  /tmp/agentevalkit-demo/tracepack-pack \
+  /tmp/agentevalkit-demo/failmap-clusters.json \
   --json
 
 PYTHONPATH=src python3 -m failmap.cli summarize \
-  /tmp/agentcode-demo/failmap-clusters.json \
+  /tmp/agentevalkit-demo/failmap-clusters.json \
   --json
 ```
 
@@ -179,8 +180,8 @@ PackSlice works directly on the TracePack artifact, so you can prepare datasets 
 cd projects/packslice
 
 PYTHONPATH=src python3 -m packslice.cli split \
-  /tmp/agentcode-demo/tracepack-pack \
-  /tmp/agentcode-demo/packslice \
+  /tmp/agentevalkit-demo/tracepack-pack \
+  /tmp/agentevalkit-demo/packslice \
   --group-by signature \
   --train-ratio 70 \
   --eval-ratio 15 \
@@ -188,7 +189,7 @@ PYTHONPATH=src python3 -m packslice.cli split \
   --json
 
 PYTHONPATH=src python3 -m packslice.cli summarize \
-  /tmp/agentcode-demo/packslice \
+  /tmp/agentevalkit-demo/packslice \
   --json
 ```
 
@@ -230,13 +231,13 @@ You do not need `jq`; plain Python works everywhere GitHub Actions already has P
 agentci summarize examples/openai_agents_episode.json --json > summary.json
 python -c "import json; data=json.load(open('summary.json')); assert data['tool_calls'] >= 1"
 
-tracepack inspect /tmp/agentcode-demo/tracepack-pack --json > inspect.json
+tracepack inspect /tmp/agentevalkit-demo/tracepack-pack --json > inspect.json
 python -c "import json; data=json.load(open('inspect.json')); assert data['case_count'] >= 1"
 
 failmap compare-summary compare.json --json > compare-summary.json
 python -c "import json; data=json.load(open('compare-summary.json')); assert 'summary' in data"
 
-packslice summarize /tmp/agentcode-demo/packslice --json > split-summary.json
+packslice summarize /tmp/agentevalkit-demo/packslice --json > split-summary.json
 python -c "import json; data=json.load(open('split-summary.json')); assert len(data['splits']) == 3"
 ```
 
@@ -246,6 +247,7 @@ For a real CI job, a layout like this works well:
 
 ```text
 artifacts/
+  manifest.json
   agentci/
     summary.json
     regression.json

@@ -1,6 +1,6 @@
-# Contributing to AgentCode
+# Contributing to AgentEvalKit
 
-Thanks for checking out `AgentCode`.
+Thanks for checking out `AgentEvalKit`.
 
 This monorepo is intentionally narrow: each project should solve a concrete gap in agent reproducibility, regression testing, failure analysis, or benchmark preparation. Contributions are most useful when they strengthen that end-to-end story instead of adding unrelated demos.
 
@@ -63,8 +63,10 @@ For monorepo automation checks, the root demo script is often the fastest way to
 
 ```bash
 chmod +x scripts/run_automation_demo.sh
-./scripts/run_automation_demo.sh /tmp/agentcode-demo
+./scripts/run_automation_demo.sh /tmp/agentevalkit-demo
 ```
+
+That demo now writes a root `manifest.json` alongside the per-tool artifacts, which is the best single file to inspect when you want to confirm the end-to-end handoff shape.
 
 ## Repo layout
 
@@ -113,7 +115,7 @@ cd projects/packslice && python -m unittest discover -s tests -v
 End-to-end validation:
 
 ```bash
-./scripts/run_automation_demo.sh /tmp/agentcode-demo
+./scripts/run_automation_demo.sh /tmp/agentevalkit-demo
 ```
 
 If you change CLI output that is documented in the README, examples, or CI workflow, update those references in the same pull request.
@@ -160,6 +162,6 @@ If you want to propose a new project for the monorepo, start by describing:
 - the missing workflow in today's agent tooling
 - why the problem is not already well served by existing OSS
 - the minimal artifact contract and CLI that would make it useful
-- how it would connect to the rest of `AgentCode`
+- how it would connect to the rest of `AgentEvalKit`
 
 The best proposals usually start small: one tight workflow, one useful artifact, one clear CLI, and one obvious connection to the rest of the toolchain.

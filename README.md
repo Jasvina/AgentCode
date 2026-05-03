@@ -1,8 +1,8 @@
-# AgentCode
+# AgentEvalKit
 
-[![CI](https://github.com/Jasvina/AgentCode/actions/workflows/ci.yml/badge.svg)](https://github.com/Jasvina/AgentCode/actions/workflows/ci.yml)
-[![License](https://img.shields.io/github/license/Jasvina/AgentCode)](LICENSE)
-[![Monorepo](https://img.shields.io/badge/layout-agent%20tooling%20monorepo-0a7bbb)](https://github.com/Jasvina/AgentCode)
+[![CI](https://github.com/Jasvina/AgentEvalKit/actions/workflows/ci.yml/badge.svg)](https://github.com/Jasvina/AgentEvalKit/actions/workflows/ci.yml)
+[![License](https://img.shields.io/github/license/Jasvina/AgentEvalKit)](LICENSE)
+[![Monorepo](https://img.shields.io/badge/layout-agent%20tooling%20monorepo-0a7bbb)](https://github.com/Jasvina/AgentEvalKit)
 
 A public monorepo for practical open-source projects in the LLM Agent stack.
 
@@ -17,12 +17,12 @@ After surveying today's high-star Agent repositories, four opportunities stood o
 - teams can collect failures, but still lack a simple OSS layer for clustering recurring failure modes and prioritizing fixes across releases
 - teams can build eval packs, but still lack balanced split tooling for train/eval/test and release slicing
 
-`AgentCode` is a place to build those missing layers as focused OSS projects.
+`AgentEvalKit` is a place to build those missing layers as focused OSS projects.
 
 ## Architecture at a glance
 
 <p align="center">
-  <img src="docs/assets/agentcode-overview.svg" alt="AgentCode architecture overview" width="100%" />
+  <img src="docs/assets/agentevalkit-overview.svg" alt="AgentEvalKit architecture overview" width="100%" />
 </p>
 
 This is the intended product story for the monorepo:
@@ -36,13 +36,13 @@ This is the intended product story for the monorepo:
 ## Quick demo output
 
 <p align="center">
-  <img src="docs/assets/agentcode-demo-terminal.svg" alt="AgentCode terminal-style demo output" width="100%" />
+  <img src="docs/assets/agentevalkit-demo-terminal.svg" alt="AgentEvalKit terminal-style demo output" width="100%" />
 </p>
 
 If you want a one-command walkthrough of the whole repo:
 
 ```bash
-./scripts/run_automation_demo.sh /tmp/agentcode-demo
+./scripts/run_automation_demo.sh /tmp/agentevalkit-demo
 ```
 
 That gives visitors an immediate answer to the most important README question: “what does this repo actually produce when I run it?”
@@ -102,6 +102,7 @@ For a fuller walkthrough, see `docs/automation.md`, the companion script `script
 The root workflow now runs an end-to-end automation demo and uploads artifacts that mirror a real team handoff:
 
 ```text
+manifest.json
 agentci-summary.json
 agentci-regression.json
 tracepack-pack/
@@ -115,12 +116,14 @@ packslice/
   test/
 ```
 
+The top-level `manifest.json` acts as a machine-readable index for the full demo run, so CI jobs, dashboards, or artifact consumers can discover the output set and key summary metrics from one stable entrypoint.
+
 That makes the repo feel less like four isolated READMEs and more like one coherent toolchain.
 
 Here is a visual snapshot of that terminal-style demo flow:
 
 <p align="center">
-  <img src="docs/assets/agentcode-demo-terminal.svg" alt="AgentCode quick demo output" width="100%" />
+  <img src="docs/assets/agentevalkit-demo-terminal.svg" alt="AgentEvalKit quick demo output" width="100%" />
 </p>
 
 ## Monorepo structure
