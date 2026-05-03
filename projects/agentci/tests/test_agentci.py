@@ -178,6 +178,45 @@ class AgentCITests(unittest.TestCase):
         self.assertEqual(payload["tool_calls"], 1)
         self.assertEqual(payload["model_calls"], 1)
 
+
+    def test_diff_json_includes_step_items_for_nested_payload_changes(self):
+        baseline = self._build_episode()
+        candidate = self._build_episode()
+        candidate.steps[1].payload["output"] = {"ok": False, "reason": "timeout"}
+        with tempfile.TemporaryDirectory() as tmpdir:
+            root = Path(tmpdir)
+            baseline_path = root / "baseline.json"
+            candidate_path = root / "candidate.json"
+            baseline.save(baseline_path)
+            candidate.save(candidate_path)
+            output = StringIO()
+            with redirect_stdout(output):
+                code = cli_main(["diff", str(baseline_path), str(candidate_path), "--json"])
+        payload = json.loads(output.getvalue())
+        self.assertEqual(code, 0)
+        self.assertTrue(payload["changed"])
+        self.assertTrue(payload["step_items"])
+        self.assertEqual(payload["step_items"][0]["step_index"], 2)
+        self.assertIn("payload.output", payload["step_items"][0]["field_path"])
+
+    def test_assert_regression_failure_message_includes_step_details(self):
+        baseline = self._build_episode()
+        candidate = self._build_episode()
+        candidate.steps[1].payload["status"] = "error"
+        result = run_regression_check(baseline, candidate, check_candidate_replay=False)
+        self.assertFalse(result.passed)
+        message = result.failure_message()
+        self.assertIn("step details:", message)
+        self.assertIn("step 2 [tool_call:tool] payload.status", message)
+
+    def test_html_report_renders_field_level_step_changes(self):
+        baseline = self._build_episode()
+        candidate = self._build_episode()
+        candidate.steps.append(type(baseline.steps[0])(kind="note", name="extra", payload={"x": 1}))
+        html = render_diff_html_report(baseline, candidate)
+        self.assertIn("field-level changes", html)
+        self.assertIn("step 3 [note:extra] step", html)
+
     def test_diff_cli_can_emit_json(self):
         baseline = self._build_episode()
         candidate = self._build_episode()

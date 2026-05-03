@@ -4,7 +4,7 @@ from html import escape
 import json
 from pathlib import Path
 
-from .compare import compare_episodes
+from .compare import StepDiffItem, compare_episodes
 from .schema import Episode, EpisodeStep
 
 
@@ -12,22 +12,33 @@ def _pretty_json(value: object) -> str:
     return json.dumps(value, indent=2, sort_keys=True, ensure_ascii=False)
 
 
-def _step_rows(baseline: Episode, candidate: Episode) -> str:
+def _step_rows(baseline: Episode, candidate: Episode, step_items: list[StepDiffItem]) -> str:
     rows: list[str] = []
+    grouped: dict[int, list[StepDiffItem]] = {}
+    for item in step_items:
+        grouped.setdefault(item.step_index, []).append(item)
     max_steps = max(len(baseline.steps), len(candidate.steps))
     for index in range(max_steps):
         left = baseline.steps[index] if index < len(baseline.steps) else None
         right = candidate.steps[index] if index < len(candidate.steps) else None
-        changed = left != right
+        item_group = grouped.get(index + 1, [])
+        changed = left != right or bool(item_group)
         rows.append(
             "<tr>"
             f"<td>{index + 1}</td>"
             f"<td>{_render_step(left)}</td>"
             f"<td>{_render_step(right)}</td>"
-            f"<td><span class='badge {'changed' if changed else 'same'}'>{'changed' if changed else 'same'}</span></td>"
+            f"<td><span class='badge {'changed' if changed else 'same'}'>{'changed' if changed else 'same'}</span>{_render_step_diff_items(item_group)}</td>"
             "</tr>"
         )
     return "\n".join(rows)
+
+
+def _render_step_diff_items(items: list[StepDiffItem]) -> str:
+    if not items:
+        return ""
+    details = "".join(f"<li><code>{escape(item.to_text())}</code></li>" for item in items)
+    return f"<details><summary>field-level changes</summary><ul>{details}</ul></details>"
 
 
 def _render_step(step: EpisodeStep | None) -> str:
@@ -241,7 +252,7 @@ def render_diff_html_report(baseline: Episode, candidate: Episode) -> str:
           </tr>
         </thead>
         <tbody>
-          {_step_rows(baseline, candidate)}
+          {_step_rows(baseline, candidate, diff.step_items)}
         </tbody>
       </table>
     </section>

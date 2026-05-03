@@ -3,7 +3,7 @@ from __future__ import annotations
 from dataclasses import dataclass, field
 from pathlib import Path
 
-from .compare import compare_episodes
+from .compare import StepDiffItem, compare_episodes
 from .replay import replay_episode
 from .schema import Episode
 
@@ -14,6 +14,7 @@ class RegressionResult:
     baseline_path: str | None = None
     candidate_path: str | None = None
     diff_items: list[str] = field(default_factory=list)
+    step_items: list[StepDiffItem] = field(default_factory=list)
     replay_mismatches: list[str] = field(default_factory=list)
 
     def to_dict(self) -> dict[str, object]:
@@ -22,6 +23,7 @@ class RegressionResult:
             "baseline_path": self.baseline_path,
             "candidate_path": self.candidate_path,
             "diff_items": list(self.diff_items),
+            "step_items": [item.to_dict() for item in self.step_items],
             "replay_mismatches": list(self.replay_mismatches),
         }
 
@@ -33,6 +35,9 @@ class RegressionResult:
         if self.diff_items:
             lines.append("- diff:")
             lines.extend(f"  - {item}" for item in self.diff_items)
+        if self.step_items:
+            lines.append("- step details:")
+            lines.extend(f"  - {item.to_text()}" for item in self.step_items)
         if self.replay_mismatches:
             lines.append("- replay mismatches:")
             lines.extend(f"  - {item}" for item in self.replay_mismatches)
@@ -58,6 +63,7 @@ def run_regression_check(
 ) -> RegressionResult:
     diff = compare_episodes(baseline, candidate)
     kept_items = [item for item in diff.items if _keep_item(item, ignore_diff_prefixes)]
+    kept_step_items = [item for item in diff.step_items if _keep_item(item.to_text(), ignore_diff_prefixes)]
     replay_mismatches: list[str] = []
     if check_candidate_replay:
         replay = replay_episode(candidate, strict=True)
@@ -68,6 +74,7 @@ def run_regression_check(
         baseline_path=baseline_path,
         candidate_path=candidate_path,
         diff_items=kept_items,
+        step_items=kept_step_items,
         replay_mismatches=replay_mismatches,
     )
 
